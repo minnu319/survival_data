@@ -1097,6 +1097,51 @@ h3.block-title::before {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* =================== SYNC PULSE (real-time indicator) =================== */
+#sync-pulse {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: linear-gradient(180deg, rgba(28,28,28,0.96), rgba(20,20,20,0.96));
+  border: 1px solid var(--good);
+  color: var(--good);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 22px rgba(107,255,138,0.18), 0 0 0 1px rgba(107,255,138,0.06) inset;
+  transition: opacity 0.32s ease, transform 0.32s ease;
+  white-space: nowrap;
+  max-width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#sync-pulse.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+#sync-pulse .sp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--good);
+  display: inline-block;
+  box-shadow: 0 0 8px var(--good);
+  animation: sp-blink 1s ease-in-out infinite;
+}
+@keyframes sp-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
 /* =================== HELPERS =================== */
 .empty {
   padding: 60px 20px;
@@ -3104,34 +3149,80 @@ document.getElementById('brand-logo').src = LOGO_DATA;
 /* ========================================================
    STORAGE LAYER (with cache + fallback)
    ======================================================== */
+/* --------------------------------------------------------
+   STORAGE LAYER — REAL-TIME SYNC BETWEEN WEB & APP
+   --------------------------------------------------------
+   Strategy:
+   1. Shared writes go to window.storage(shared:true) → visible to ALL devices/users
+   2. Polling every ~2.5s fetches all keys, compares hashes, detects changes
+   3. BroadcastChannel + storage event give instant sync across same-origin tabs
+   4. visibilitychange / focus / online events trigger immediate re-sync
+   5. When changes detected → State.data refreshed → current view re-rendered
+   -------------------------------------------------------- */
 const Storage = {
-  cache: {},
+  cache: {},                      // last-known value per key
+  hashes: {},                     // hash of last-known value (for change detection)
   available: typeof window.storage !== 'undefined',
+  bc: null,                       // BroadcastChannel for instant same-origin sync
+  syncTimer: null,
+  syncCallbacks: [],              // subscribers notified on remote changes
+  isPolling: false,
+  lastPollAt: 0,
+  POLL_INTERVAL: 2500,            // ms — gentle but responsive
 
+  // Keys that represent shared state (everything except per-device session)
+  SYNC_KEYS: [
+    'groups','participants','announcements','notices',
+    'missions','comments','insights','expenses','likes',
+    'config','defaultFee'
+  ],
+
+  // Compact, stable hash for change detection (djb2 variant)
+  hash(value) {
+    if (value === null || value === undefined) return '_null_';
+    const s = JSON.stringify(value);
+    let h = 5381;
+    for (let i = 0; i < s.length; i++) {
+      h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    }
+    return h + ':' + s.length;
+  },
+
+  // Read from cache if warm, otherwise fetch
   async get(key) {
     if (this.cache[key] !== undefined) return this.cache[key];
+    const val = await this.fetchFresh(key);
+    this.cache[key] = val;
+    this.hashes[key] = this.hash(val);
+    return val;
+  },
+
+  // Force a fresh fetch from underlying store (bypass cache)
+  async fetchFresh(key) {
     if (!this.available) {
-      const v = localStorage.getItem('ssj_'+key);
-      const parsed = v ? JSON.parse(v) : null;
-      this.cache[key] = parsed;
-      return parsed;
+      try {
+        const v = localStorage.getItem('ssj_'+key);
+        return v ? JSON.parse(v) : null;
+      } catch(e) { return null; }
     }
     try {
       const res = await window.storage.get(key, true);
-      const val = res ? JSON.parse(res.value) : null;
-      this.cache[key] = val;
-      return val;
-    } catch(e) {
-      this.cache[key] = null;
-      return null;
-    }
+      return res ? JSON.parse(res.value) : null;
+    } catch(e) { return null; }
   },
 
   async set(key, value) {
     this.cache[key] = value;
+    this.hashes[key] = this.hash(value);
+
+    // Instant signal to other tabs on this origin
+    try { this.bc && this.bc.postMessage({ type: 'set', key, t: Date.now() }); } catch(e) {}
+
     if (!this.available) {
-      localStorage.setItem('ssj_'+key, JSON.stringify(value));
-      return true;
+      try {
+        localStorage.setItem('ssj_'+key, JSON.stringify(value));
+        return true;
+      } catch(e) { return false; }
     }
     try {
       await window.storage.set(key, JSON.stringify(value), true);
@@ -3144,14 +3235,102 @@ const Storage = {
 
   async delete(key) {
     delete this.cache[key];
+    delete this.hashes[key];
+    try { this.bc && this.bc.postMessage({ type: 'delete', key, t: Date.now() }); } catch(e) {}
     if (!this.available) {
-      localStorage.removeItem('ssj_'+key);
-      return true;
+      try { localStorage.removeItem('ssj_'+key); return true; } catch(e) { return false; }
     }
+    try { await window.storage.delete(key, true); return true; } catch(e) { return false; }
+  },
+
+  // Register a callback for remote changes — receives an array of changed keys
+  onChange(cb) { this.syncCallbacks.push(cb); },
+
+  // One pass: fetch every sync key, detect diffs, fire callbacks if changed
+  async pollOnce() {
+    if (this.isPolling) return [];
+    this.isPolling = true;
+    const changed = [];
     try {
-      await window.storage.delete(key, true);
-      return true;
-    } catch(e) { return false; }
+      const results = await Promise.all(
+        this.SYNC_KEYS.map(k =>
+          this.fetchFresh(k).then(v => [k, v]).catch(() => [k, undefined])
+        )
+      );
+      for (const [key, val] of results) {
+        if (val === undefined) continue;  // fetch error → keep current cache
+        const newHash = this.hash(val);
+        if (newHash !== this.hashes[key]) {
+          // Guard: don't accept "null" if we already have real data (transient read-after-write race)
+          const have = this.cache[key];
+          if (val === null && have != null && (
+            (Array.isArray(have) && have.length > 0) ||
+            (typeof have === 'object' && Object.keys(have).length > 0)
+          )) {
+            continue;
+          }
+          this.cache[key] = val;
+          this.hashes[key] = newHash;
+          changed.push(key);
+        }
+      }
+      this.lastPollAt = Date.now();
+      if (changed.length > 0) {
+        for (const cb of this.syncCallbacks) {
+          try { cb(changed); } catch(e) { console.error('sync callback error', e); }
+        }
+      }
+    } catch(e) {
+      console.error('Storage poll failed:', e);
+    } finally {
+      this.isPolling = false;
+    }
+    return changed;
+  },
+
+  startSync() {
+    // 1) Same-origin instant sync via BroadcastChannel
+    if (typeof BroadcastChannel !== 'undefined') {
+      try {
+        this.bc = new BroadcastChannel('ssj_sync_v1');
+        this.bc.onmessage = () => {
+          // Another tab on this origin wrote — re-poll quickly
+          setTimeout(() => this.pollOnce(), 80);
+        };
+      } catch(e) {}
+    }
+
+    // 2) Cross-tab via storage event (works when fallback path uses localStorage)
+    try {
+      window.addEventListener('storage', (e) => {
+        if (e.key && e.key.startsWith('ssj_') && !e.key.startsWith('ssj_local_')) {
+          setTimeout(() => this.pollOnce(), 50);
+        }
+      });
+    } catch(e) {}
+
+    // 3) Visibility / focus / online — eager refresh when user returns to tab
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) this.pollOnce();
+    });
+    window.addEventListener('focus', () => this.pollOnce());
+    window.addEventListener('online', () => this.pollOnce());
+
+    // 4) Periodic poll (recursive setTimeout — never stacks, always paced)
+    const tick = () => {
+      this.syncTimer = setTimeout(async () => {
+        if (!document.hidden) {
+          await this.pollOnce();
+        }
+        tick();
+      }, this.POLL_INTERVAL);
+    };
+    tick();
+  },
+
+  stopSync() {
+    if (this.syncTimer) { clearTimeout(this.syncTimer); this.syncTimer = null; }
+    if (this.bc) { try { this.bc.close(); } catch(e) {} this.bc = null; }
   }
 };
 
@@ -3304,6 +3483,17 @@ async function initApp() {
   await Storage.set('notices', State.data.notices);
   await Storage.set('config', State.data.config);
 
+  // ──────────────────────────────────────────────────────────
+  // REAL-TIME SYNC: seed change-detection hashes, wire callback,
+  // start polling. From now on any remote write (web or app) is
+  // detected within ~2.5s (or instantly on visibility/focus).
+  // ──────────────────────────────────────────────────────────
+  for (const k of Storage.SYNC_KEYS) {
+    Storage.hashes[k] = Storage.hash(Storage.cache[k]);
+  }
+  Storage.onChange(applyRemoteChanges);
+  Storage.startSync();
+
   // Auto-restore session from local device storage
   const session = LocalStore.get('session');
   if (session && session.role === 'admin') {
@@ -3375,6 +3565,105 @@ function toast(msg, type = 'info') {
   t.textContent = msg;
   zone.appendChild(t);
   setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
+}
+
+/* ========================================================
+   REAL-TIME SYNC GLUE
+   Bridges Storage cache → State.data → on-screen re-render
+   ======================================================== */
+function applyRemoteChanges(changedKeys) {
+  if (!changedKeys || changedKeys.length === 0) return;
+
+  // 1. Pull new values from Storage cache into State.data
+  for (const key of changedKeys) {
+    const v = Storage.cache[key];
+    if (key === 'config') {
+      State.data.config = v || State.data.config || DEFAULT_CONFIG;
+    } else if (key === 'defaultFee') {
+      State.data.defaultFee = (v != null) ? v : (State.data.defaultFee || 0);
+    } else if (key in State.data) {
+      // List-shaped data: fall back to [] if remote is null
+      State.data[key] = v || (Array.isArray(State.data[key]) ? [] : (State.data[key] || null));
+    }
+  }
+
+  // 2. If logged-in participant was deleted remotely, drop them to login screen
+  if (State.user && State.user.role !== 'admin') {
+    const still = State.data.participants.find(p => p.id === State.user.id);
+    if (!still) {
+      LocalStore.delete('session');
+      State.user = null;
+      const appEl = document.getElementById('app');
+      const loginEl = document.getElementById('login-screen');
+      if (appEl) appEl.classList.add('hidden');
+      if (loginEl) loginEl.classList.remove('hidden');
+      renderLoginScreen();
+      toast('계정 정보가 변경되어 로그인 화면으로 이동합니다.', 'info');
+      return;
+    }
+  }
+
+  // 3. Re-render whichever surface is currently visible
+  const appHidden = document.getElementById('app')?.classList.contains('hidden');
+  if (appHidden) {
+    // We're on the login screen — refresh the participant chips list
+    try { renderLoginScreen(); } catch(e) {}
+  } else {
+    rerenderCurrentView();
+  }
+
+  // 4. Show a subtle visual confirmation
+  showSyncPulse(changedKeys);
+}
+
+function rerenderCurrentView() {
+  const m = document.getElementById('main-view');
+  if (!m) return;
+
+  // Never disrupt an open modal — modal owns its own state
+  if (document.getElementById('modal-backdrop')) return;
+
+  // Never yank focus from a user actively typing — defer until they're idle
+  const active = document.activeElement;
+  if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
+    return;
+  }
+
+  const scrollY = window.scrollY;
+  const id = State.currentTab;
+  m.innerHTML = '';
+  try {
+    if (id === 'big') renderBigZone(m);
+    else if (id === 'small') renderSmallZone(m);
+    else if (id === 'fame') renderHallOfFame(m);
+    else if (id === 'insight') renderMyInsights(m);
+    else if (id === 'admin') renderAdmin(m);
+  } catch(e) {
+    console.error('rerenderCurrentView failed:', e);
+  }
+  // Restore scroll without smooth animation (instant feels better here)
+  window.scrollTo(0, scrollY);
+}
+
+function showSyncPulse(keys) {
+  let el = document.getElementById('sync-pulse');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sync-pulse';
+    document.body.appendChild(el);
+  }
+  const labelMap = {
+    missions: '미션', comments: '피드백', insights: '인사이트',
+    likes: '좋아요', participants: '멤버', announcements: '공지',
+    notices: '알림', groups: '조', expenses: '지출',
+    config: '시즌 설정', defaultFee: '회비'
+  };
+  const labels = keys.map(k => labelMap[k] || k).slice(0, 3);
+  const more = keys.length > 3 ? ` +${keys.length - 3}` : '';
+  el.innerHTML = `<span class="sp-dot"></span> SYNCED · ${labels.join(' · ')}${more}`;
+  el.classList.add('visible');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('visible'), 1800);
 }
 
 /* ========================================================
