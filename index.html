@@ -1097,12 +1097,12 @@ h3.block-title::before {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* =================== SYNC PULSE INDICATOR =================== */
+/* =================== SYNC PULSE (real-time indicator) =================== */
 #sync-pulse {
   position: fixed;
   bottom: 22px;
   left: 50%;
-  transform: translateX(-50%) translateY(10px);
+  transform: translateX(-50%) translateY(8px);
   background: linear-gradient(180deg, rgba(28,28,28,0.96), rgba(20,20,20,0.96));
   border: 1px solid var(--good);
   color: var(--good);
@@ -1129,7 +1129,8 @@ h3.block-title::before {
   transform: translateX(-50%) translateY(0);
 }
 #sync-pulse .sp-dot {
-  width: 6px; height: 6px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--good);
   display: inline-block;
@@ -1139,347 +1140,6 @@ h3.block-title::before {
 @keyframes sp-blink {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.7); }
-}
-
-/* =================== SYNC STATUS BADGE (header) =================== */
-#sync-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--line-2);
-  background: var(--bg-3);
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--ink-soft);
-  margin-right: 8px;
-  user-select: none;
-  transition: border-color 0.2s, color 0.2s;
-}
-#sync-status .ss-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--ink-mute);
-  box-shadow: 0 0 0 rgba(0,0,0,0);
-}
-#sync-status[data-status="synced"] { border-color: rgba(107,255,138,0.4); color: var(--good); }
-#sync-status[data-status="synced"] .ss-dot { background: var(--good); box-shadow: 0 0 6px var(--good); }
-#sync-status[data-status="saving"] { border-color: rgba(255,210,63,0.45); color: var(--gold); }
-#sync-status[data-status="saving"] .ss-dot { background: var(--gold); animation: sp-blink 0.9s ease-in-out infinite; }
-#sync-status[data-status="error"] { border-color: rgba(255,80,80,0.45); color: var(--bad); }
-#sync-status[data-status="error"] .ss-dot { background: var(--bad); }
-
-/* =================== SYNC SETUP SCREEN =================== */
-#sync-setup-screen {
-  position: fixed; inset: 0; z-index: 100;
-  background: var(--bg);
-  overflow-y: auto;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 60px 20px 80px;
-}
-#sync-setup-screen.hidden { display: none; }
-
-.sync-setup {
-  width: 100%;
-  max-width: 620px;
-  position: relative;
-}
-.sync-setup::before, .sync-setup::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  z-index: 0;
-}
-.sync-setup::before {
-  top: -40px; left: -60px;
-  font-family: 'Black Han Sans', sans-serif;
-  width: 200px; height: 200px;
-  font-size: 240px;
-  color: rgba(255,42,42,0.04);
-  content: '⚡';
-  line-height: 1;
-}
-.sync-setup-card {
-  position: relative;
-  z-index: 1;
-  background: linear-gradient(180deg, var(--bg-2) 0%, rgba(20,20,20,0.95) 100%);
-  border: 1px solid var(--line);
-  padding: 40px 32px;
-  border-radius: 4px;
-  box-shadow: var(--shadow), 0 0 0 1px rgba(255,42,42,0.06) inset;
-}
-.ss-brand {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 28px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--line);
-}
-.ss-brand-mark {
-  font-family: 'Black Han Sans', sans-serif;
-  font-size: 30px;
-  color: var(--accent);
-  line-height: 1;
-}
-.ss-brand-sub {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.3em;
-  color: var(--ink-mute);
-}
-.ss-title {
-  font-family: 'Pretendard', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  margin-bottom: 12px;
-  color: var(--ink);
-}
-.ss-lead {
-  font-size: 14px;
-  color: var(--ink-soft);
-  line-height: 1.65;
-  margin-bottom: 28px;
-}
-.ss-lead strong { color: var(--ink); }
-
-.ss-options {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-@media (min-width: 540px) {
-  .ss-options { grid-template-columns: 1fr 1fr; }
-}
-.ss-option {
-  background: var(--bg-3);
-  border: 1px solid var(--line);
-  padding: 22px 18px 20px;
-  text-align: left;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: border-color 0.2s, transform 0.2s, background 0.2s;
-  border-radius: 4px;
-  color: inherit;
-  font-family: inherit;
-}
-.ss-option:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  background: #1f1f1f;
-}
-.ss-option .ss-icon {
-  font-size: 28px;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.ss-option .ss-h {
-  font-weight: 800;
-  font-size: 15px;
-  color: var(--ink);
-  letter-spacing: -0.005em;
-}
-.ss-option .ss-d {
-  font-size: 12px;
-  color: var(--ink-mute);
-  line-height: 1.55;
-}
-.ss-option.ss-new:hover .ss-h { color: var(--accent); }
-.ss-option.ss-join:hover .ss-h { color: var(--gold); }
-
-.ss-result {
-  margin-top: 4px;
-  padding: 20px;
-  border-radius: 4px;
-  border: 1px dashed var(--line-2);
-  background: rgba(0,0,0,0.25);
-}
-.ss-result.hidden { display: none; }
-
-.ss-loading, .ss-msg.loading {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--ink-soft);
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.15em;
-  font-size: 13px;
-}
-.ss-spinner {
-  width: 14px; height: 14px;
-  border: 2px solid var(--line-2);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  display: inline-block;
-  animation: ss-spin 0.7s linear infinite;
-}
-@keyframes ss-spin { to { transform: rotate(360deg); } }
-
-.ss-success-h {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.18em;
-  color: var(--good);
-  margin-bottom: 14px;
-}
-.ss-id-card {
-  background: var(--bg);
-  border: 1px solid var(--line-2);
-  padding: 16px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-}
-.ss-id-label {
-  display: block;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  color: var(--ink-mute);
-  margin-bottom: 8px;
-}
-.ss-id-display {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-3);
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  margin-bottom: 12px;
-}
-.ss-id-display code {
-  flex: 1;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  color: var(--gold);
-  word-break: break-all;
-  user-select: all;
-}
-.ss-id-note {
-  font-size: 12px;
-  color: var(--ink-soft);
-  line-height: 1.6;
-}
-.ss-id-note strong { color: var(--ink); }
-.ss-continue {
-  width: 100%;
-  margin-top: 4px;
-}
-
-.ss-error-h {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.18em;
-  color: var(--bad);
-  margin-bottom: 8px;
-}
-.ss-error-msg {
-  font-size: 13px;
-  color: var(--ink);
-  margin-bottom: 8px;
-  padding: 8px 10px;
-  background: rgba(255,80,80,0.06);
-  border-left: 2px solid var(--bad);
-}
-.ss-error-hint {
-  font-size: 12px;
-  color: var(--ink-mute);
-  line-height: 1.6;
-  margin-bottom: 10px;
-}
-
-.ss-join-form { display: flex; flex-direction: column; gap: 10px; }
-.ss-join-label {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--ink-soft);
-}
-.ss-id-input { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.08em; }
-.ss-btns { display: flex; gap: 8px; }
-.ss-msg {
-  font-size: 12px;
-  padding: 6px 0;
-  min-height: 18px;
-}
-.ss-msg.error { color: var(--bad); }
-.ss-msg.success { color: var(--good); }
-
-.ss-footnote {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
-  font-size: 11px;
-  color: var(--ink-mute);
-  line-height: 1.6;
-}
-.ss-footnote code {
-  background: var(--bg-3);
-  padding: 1px 6px;
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.05em;
-  color: var(--ink-soft);
-}
-
-/* =================== ADMIN SYNC PANEL =================== */
-.sync-panel {
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  padding: 20px;
-  margin-bottom: 24px;
-  border-radius: 4px;
-}
-.sync-panel-h {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.2em;
-  color: var(--accent);
-  margin-bottom: 14px;
-}
-.sync-panel-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  font-size: 13px;
-}
-.sync-panel-row .lbl {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  color: var(--ink-mute);
-  min-width: 90px;
-}
-.sync-panel-row .val {
-  flex: 1;
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.06em;
-  color: var(--gold);
-  word-break: break-all;
-}
-.sync-panel-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-.sync-panel-note {
-  margin-top: 10px;
-  padding: 10px 12px;
-  background: rgba(255,210,63,0.06);
-  border-left: 2px solid var(--gold);
-  font-size: 12px;
-  color: var(--ink-soft);
-  line-height: 1.55;
 }
 
 /* =================== HELPERS =================== */
@@ -2647,7 +2307,6 @@ section { margin-bottom: 36px; }
         </div>
       </div>
       <div class="user-info">
-        <div id="sync-status" data-status="synced" title="동기화 상태"><span class="ss-dot"></span><span class="ss-label">SYNCED</span></div>
         <div class="who">
           <div class="activity" id="user-activity"></div>
           <div class="role" id="user-role"></div>
@@ -3490,330 +3149,179 @@ document.getElementById('brand-logo').src = LOGO_DATA;
 /* ========================================================
    STORAGE LAYER (with cache + fallback)
    ======================================================== */
-/* ========================================================
-   STORAGE LAYER — REAL CROSS-DEVICE SYNC VIA JSONBLOB.COM
+/* --------------------------------------------------------
+   STORAGE LAYER — REAL-TIME SYNC BETWEEN WEB & APP
    --------------------------------------------------------
-   Why this exists:
-   `window.storage` (Claude artifact storage) is NOT shared
-   between the web client and the mobile/desktop app — each
-   environment sandboxes its own store. To get true real-time
-   sync across web ↔ app we use an external no-auth blob:
-
-     https://jsonblob.com/api/jsonBlob/{blobId}
-
-   First device → creates a blob, gets an ID
-   Other devices → enter that ID, they're connected
-   Background polling (every 4s + on focus/visibility/online)
-   detects any remote write and re-renders the current view.
-
-   The OLD async get/set/delete API is preserved so every
-   existing call site keeps working without modification.
-   ======================================================== */
+   Strategy:
+   1. Shared writes go to window.storage(shared:true) → visible to ALL devices/users
+   2. Polling every ~2.5s fetches all keys, compares hashes, detects changes
+   3. BroadcastChannel + storage event give instant sync across same-origin tabs
+   4. visibilitychange / focus / online events trigger immediate re-sync
+   5. When changes detected → State.data refreshed → current view re-rendered
+   -------------------------------------------------------- */
 const Storage = {
-  // Live snapshot of every shared data key (single source of truth)
-  snapshot: {},
-  // Compatibility alias — some older code expects `.cache`
-  get cache() { return this.snapshot; },
-
-  // Hash of each key in the most-recently-seen remote state
-  remoteHashes: {},
-
-  // Connection state
-  mode: 'local',      // 'remote' (jsonblob) | 'local' (localStorage only)
-  blobId: null,
-  blobUrl: null,
-  available: false,   // true when remote backend is connected
-
-  // Sync machinery
-  pollTimer: null,
-  putTimer: null,
+  cache: {},                      // last-known value per key
+  hashes: {},                     // hash of last-known value (for change detection)
+  available: typeof window.storage !== 'undefined',
+  bc: null,                       // BroadcastChannel for instant same-origin sync
+  syncTimer: null,
+  syncCallbacks: [],              // subscribers notified on remote changes
   isPolling: false,
-  isPutting: false,
-  pendingChanges: 0,
-  syncCallbacks: [],
-  statusCallbacks: [],
-  bc: null,
+  lastPollAt: 0,
+  POLL_INTERVAL: 2500,            // ms — gentle but responsive
 
-  // Constants
-  POLL_INTERVAL: 4000,        // 4s between polls when tab is visible
-  PUT_DEBOUNCE: 450,          // batch rapid local writes into one PUT
-  PUT_RETRY_DELAY: 1800,
-  PUT_MAX_RETRIES: 4,
-  BASE_URL: 'https://jsonblob.com/api/jsonBlob',
+  // Keys that represent shared state (everything except per-device session)
   SYNC_KEYS: [
     'groups','participants','announcements','notices',
     'missions','comments','insights','expenses','likes',
     'config','defaultFee'
   ],
 
-  // Stable hash (djb2) for change detection
+  // Compact, stable hash for change detection (djb2 variant)
   hash(value) {
     if (value === null || value === undefined) return '_null_';
     const s = JSON.stringify(value);
     let h = 5381;
-    for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    for (let i = 0; i < s.length; i++) {
+      h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    }
     return h + ':' + s.length;
   },
 
-  // ── INITIALIZATION ──────────────────────────────────────
-  async init() {
-    const savedId = LocalStore.get('blob_id');
-    if (savedId) {
-      try {
-        const data = await this._httpGet(`${this.BASE_URL}/${savedId}`);
-        if (data && typeof data === 'object') {
-          this._adopt(savedId, data);
-          return 'remote';
-        }
-      } catch(e) {
-        console.warn('[Sync] saved blob unreachable:', e && e.message);
-        // Keep blob_id; user can retry. Still load local cache for now.
-      }
-    }
-    // Fallback: load whatever we have in localStorage
-    this.mode = 'local';
-    for (const k of this.SYNC_KEYS) {
-      try {
-        const v = localStorage.getItem('ssj_' + k);
-        if (v != null) this.snapshot[k] = JSON.parse(v);
-      } catch(e) {}
-    }
-    return 'local';
-  },
-
-  _adopt(blobId, data) {
-    this.blobId = blobId;
-    this.blobUrl = `${this.BASE_URL}/${blobId}`;
-    this.snapshot = (data && typeof data === 'object') ? data : {};
-    this.mode = 'remote';
-    this.available = true;
-    for (const k of this.SYNC_KEYS) {
-      this.remoteHashes[k] = this.hash(this.snapshot[k]);
-    }
-  },
-
-  // ── REMOTE ROOM MANAGEMENT ──────────────────────────────
-  async createNewRoom(seedData) {
-    const seed = seedData || {};
-    const blobId = await this._httpPostNew(this.BASE_URL, seed);
-    LocalStore.set('blob_id', blobId);
-    this._adopt(blobId, JSON.parse(JSON.stringify(seed)));
-    return blobId;
-  },
-
-  async connectToBlob(rawId) {
-    const blobId = String(rawId || '').trim();
-    if (!blobId) throw new Error('Sync ID를 입력해주세요.');
-    // Allow pasting a full URL — extract the trailing ID
-    const m = blobId.match(/[a-zA-Z0-9_-]{8,}$/);
-    const cleanId = m ? m[0] : blobId;
-    const data = await this._httpGet(`${this.BASE_URL}/${cleanId}`);
-    if (!data || typeof data !== 'object') {
-      throw new Error('유효하지 않은 동기화 룸입니다.');
-    }
-    LocalStore.set('blob_id', cleanId);
-    this._adopt(cleanId, data);
-    return cleanId;
-  },
-
-  disconnectRoom() {
-    LocalStore.delete('blob_id');
-    this.blobId = null;
-    this.blobUrl = null;
-    this.available = false;
-    this.mode = 'local';
-    this.stopSync();
-  },
-
-  // ── LOW-LEVEL HTTP ──────────────────────────────────────
-  async _httpGet(url) {
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' },
-      cache: 'no-store'
-    });
-    if (!res.ok) {
-      if (res.status === 404) throw new Error('해당 ID의 동기화 룸을 찾을 수 없습니다.');
-      throw new Error('서버 응답 오류: HTTP ' + res.status);
-    }
-    return await res.json();
-  },
-
-  async _httpPut(url, body) {
-    const res = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error('PUT 실패: HTTP ' + res.status);
-    return res;
-  },
-
-  async _httpPostNew(url, body) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error('POST 실패: HTTP ' + res.status);
-    // Try Location header first
-    let blobId = null;
-    const loc = res.headers.get('Location') || res.headers.get('content-location');
-    if (loc) {
-      const m = loc.match(/\/api\/jsonBlob\/([^\/?#]+)/);
-      if (m) blobId = m[1];
-    }
-    if (!blobId) {
-      // Some configurations strip headers due to CORS; fall back to body
-      try {
-        const data = await res.json();
-        if (data && data.id) blobId = data.id;
-      } catch(_) {}
-    }
-    if (!blobId) {
-      throw new Error('새 룸의 ID를 받지 못했습니다. (CORS로 Location 헤더가 차단되었을 수 있습니다.)');
-    }
-    return blobId;
-  },
-
-  // ── PUBLIC API (same shape as before — async-safe) ──────
+  // Read from cache if warm, otherwise fetch
   async get(key) {
-    return this.snapshot[key] !== undefined ? this.snapshot[key] : null;
+    if (this.cache[key] !== undefined) return this.cache[key];
+    const val = await this.fetchFresh(key);
+    this.cache[key] = val;
+    this.hashes[key] = this.hash(val);
+    return val;
+  },
+
+  // Force a fresh fetch from underlying store (bypass cache)
+  async fetchFresh(key) {
+    if (!this.available) {
+      try {
+        const v = localStorage.getItem('ssj_'+key);
+        return v ? JSON.parse(v) : null;
+      } catch(e) { return null; }
+    }
+    try {
+      const res = await window.storage.get(key, true);
+      return res ? JSON.parse(res.value) : null;
+    } catch(e) { return null; }
   },
 
   async set(key, value) {
-    this.snapshot[key] = value;
-    // Mirror to localStorage for offline resilience
-    try { localStorage.setItem('ssj_' + key, JSON.stringify(value)); } catch(e) {}
-    // Tell same-origin tabs to re-poll immediately
+    this.cache[key] = value;
+    this.hashes[key] = this.hash(value);
+
+    // Instant signal to other tabs on this origin
     try { this.bc && this.bc.postMessage({ type: 'set', key, t: Date.now() }); } catch(e) {}
-    if (this.mode === 'remote') {
-      this.pendingChanges++;
-      this._schedulePut();
+
+    if (!this.available) {
+      try {
+        localStorage.setItem('ssj_'+key, JSON.stringify(value));
+        return true;
+      } catch(e) { return false; }
     }
-    return true;
+    try {
+      await window.storage.set(key, JSON.stringify(value), true);
+      return true;
+    } catch(e) {
+      console.error('Storage set failed:', e);
+      return false;
+    }
   },
 
   async delete(key) {
-    delete this.snapshot[key];
-    try { localStorage.removeItem('ssj_' + key); } catch(e) {}
+    delete this.cache[key];
+    delete this.hashes[key];
     try { this.bc && this.bc.postMessage({ type: 'delete', key, t: Date.now() }); } catch(e) {}
-    if (this.mode === 'remote') {
-      this.pendingChanges++;
-      this._schedulePut();
+    if (!this.available) {
+      try { localStorage.removeItem('ssj_'+key); return true; } catch(e) { return false; }
     }
-    return true;
+    try { await window.storage.delete(key, true); return true; } catch(e) { return false; }
   },
 
-  // ── WRITE PIPELINE (debounced PUT) ──────────────────────
-  _schedulePut() {
-    this._setStatus('saving');
-    if (this.putTimer) clearTimeout(this.putTimer);
-    this.putTimer = setTimeout(() => { this.putTimer = null; this._flushPut(0); }, this.PUT_DEBOUNCE);
-  },
+  // Register a callback for remote changes — receives an array of changed keys
+  onChange(cb) { this.syncCallbacks.push(cb); },
 
-  async _flushPut(retry) {
-    if (!this.blobUrl) return;
-    if (this.isPutting) {
-      // Already in flight — queue another after it lands
-      this.putTimer = setTimeout(() => { this.putTimer = null; this._flushPut(0); }, 200);
-      return;
-    }
-    this.isPutting = true;
-    try {
-      await this._httpPut(this.blobUrl, this.snapshot);
-      // Our snapshot IS the remote now; reset hashes accordingly
-      for (const k of this.SYNC_KEYS) {
-        this.remoteHashes[k] = this.hash(this.snapshot[k]);
-      }
-      this.pendingChanges = 0;
-      this._setStatus('synced');
-    } catch(e) {
-      console.error('[Sync] PUT failed (try ' + retry + '):', e && e.message);
-      this._setStatus('error');
-      if (retry < this.PUT_MAX_RETRIES) {
-        this.isPutting = false;
-        setTimeout(() => this._flushPut(retry + 1), this.PUT_RETRY_DELAY * (retry + 1));
-        return;
-      }
-    } finally {
-      this.isPutting = false;
-    }
-  },
-
-  // ── READ PIPELINE (poll for remote changes) ─────────────
+  // One pass: fetch every sync key, detect diffs, fire callbacks if changed
   async pollOnce() {
-    if (!this.blobUrl || this.isPolling) return [];
-    // Don't poll if we have a pending local write — would clobber it
-    if (this.pendingChanges > 0 || this.putTimer || this.isPutting) return [];
-
+    if (this.isPolling) return [];
     this.isPolling = true;
     const changed = [];
     try {
-      const remote = await this._httpGet(this.blobUrl);
-      if (!remote || typeof remote !== 'object') return [];
-
-      for (const k of this.SYNC_KEYS) {
-        const rh = this.hash(remote[k]);
-        if (rh !== this.remoteHashes[k]) {
-          // Don't accept null over real data (transient race)
-          const have = this.snapshot[k];
-          const incoming = remote[k];
-          if (incoming == null && have != null && (
-              (Array.isArray(have) && have.length > 0) ||
-              (typeof have === 'object' && Object.keys(have).length > 0)
-          )) continue;
-
-          this.snapshot[k] = incoming;
-          this.remoteHashes[k] = rh;
-          try { localStorage.setItem('ssj_' + k, JSON.stringify(incoming)); } catch(e) {}
-          changed.push(k);
+      const results = await Promise.all(
+        this.SYNC_KEYS.map(k =>
+          this.fetchFresh(k).then(v => [k, v]).catch(() => [k, undefined])
+        )
+      );
+      for (const [key, val] of results) {
+        if (val === undefined) continue;  // fetch error → keep current cache
+        const newHash = this.hash(val);
+        if (newHash !== this.hashes[key]) {
+          // Guard: don't accept "null" if we already have real data (transient read-after-write race)
+          const have = this.cache[key];
+          if (val === null && have != null && (
+            (Array.isArray(have) && have.length > 0) ||
+            (typeof have === 'object' && Object.keys(have).length > 0)
+          )) {
+            continue;
+          }
+          this.cache[key] = val;
+          this.hashes[key] = newHash;
+          changed.push(key);
         }
       }
-      if (changed.length) {
+      this.lastPollAt = Date.now();
+      if (changed.length > 0) {
         for (const cb of this.syncCallbacks) {
-          try { cb(changed); } catch(e) { console.error(e); }
+          try { cb(changed); } catch(e) { console.error('sync callback error', e); }
         }
       }
-      this._setStatus('synced');
     } catch(e) {
-      // Network blips are expected — silent fail, will retry next tick
-      this._setStatus('error');
+      console.error('Storage poll failed:', e);
     } finally {
       this.isPolling = false;
     }
     return changed;
   },
 
-  onChange(cb) { this.syncCallbacks.push(cb); },
-  onStatus(cb) { this.statusCallbacks.push(cb); },
-  _setStatus(s) {
-    for (const cb of this.statusCallbacks) { try { cb(s); } catch(e) {} }
-  },
-
-  // ── LIFECYCLE ───────────────────────────────────────────
   startSync() {
-    if (this.mode !== 'remote') return;
-
-    // Cross-tab instant sync within same origin
+    // 1) Same-origin instant sync via BroadcastChannel
     if (typeof BroadcastChannel !== 'undefined') {
       try {
-        this.bc = new BroadcastChannel('ssj_sync_v3');
-        this.bc.onmessage = () => setTimeout(() => this.pollOnce(), 100);
+        this.bc = new BroadcastChannel('ssj_sync_v1');
+        this.bc.onmessage = () => {
+          // Another tab on this origin wrote — re-poll quickly
+          setTimeout(() => this.pollOnce(), 80);
+        };
       } catch(e) {}
     }
 
-    // Eager refresh on user attention signals
+    // 2) Cross-tab via storage event (works when fallback path uses localStorage)
+    try {
+      window.addEventListener('storage', (e) => {
+        if (e.key && e.key.startsWith('ssj_') && !e.key.startsWith('ssj_local_')) {
+          setTimeout(() => this.pollOnce(), 50);
+        }
+      });
+    } catch(e) {}
+
+    // 3) Visibility / focus / online — eager refresh when user returns to tab
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) this.pollOnce();
     });
     window.addEventListener('focus', () => this.pollOnce());
     window.addEventListener('online', () => this.pollOnce());
 
-    // Periodic poll (recursive setTimeout — no stacking)
+    // 4) Periodic poll (recursive setTimeout — never stacks, always paced)
     const tick = () => {
-      this.pollTimer = setTimeout(async () => {
-        if (!document.hidden) await this.pollOnce();
+      this.syncTimer = setTimeout(async () => {
+        if (!document.hidden) {
+          await this.pollOnce();
+        }
         tick();
       }, this.POLL_INTERVAL);
     };
@@ -3821,8 +3329,7 @@ const Storage = {
   },
 
   stopSync() {
-    if (this.pollTimer) { clearTimeout(this.pollTimer); this.pollTimer = null; }
-    if (this.putTimer) { clearTimeout(this.putTimer); this.putTimer = null; }
+    if (this.syncTimer) { clearTimeout(this.syncTimer); this.syncTimer = null; }
     if (this.bc) { try { this.bc.close(); } catch(e) {} this.bc = null; }
   }
 };
@@ -3950,34 +3457,17 @@ const DEFAULT_CONFIG = {
    INITIALIZATION
    ======================================================== */
 async function initApp() {
-  // 1. Bootstrap storage — try to reconnect to existing remote room, or fall back to local
-  await Storage.init();
-
-  // 2. Populate State.data from snapshot (with seed defaults for missing keys)
-  State.data.groups        = Storage.snapshot.groups        || SEED_GROUPS;
-  State.data.participants  = Storage.snapshot.participants  || SEED_PARTICIPANTS;
-  State.data.announcements = Storage.snapshot.announcements || SEED_ANNOUNCEMENTS;
-  State.data.notices       = Storage.snapshot.notices       || SEED_NOTICES;
-  State.data.missions      = Storage.snapshot.missions      || [];
-  State.data.comments      = Storage.snapshot.comments      || [];
-  State.data.insights      = Storage.snapshot.insights      || [];
-  State.data.expenses      = Storage.snapshot.expenses      || [];
-  State.data.likes         = Storage.snapshot.likes         || [];
-  State.data.config        = Storage.snapshot.config        || DEFAULT_CONFIG;
-  State.data.defaultFee    = Storage.snapshot.defaultFee != null ? Storage.snapshot.defaultFee : 0;
-
-  // Mirror seeded defaults back into snapshot so first PUT carries them
-  Storage.snapshot.groups        = State.data.groups;
-  Storage.snapshot.participants  = State.data.participants;
-  Storage.snapshot.announcements = State.data.announcements;
-  Storage.snapshot.notices       = State.data.notices;
-  Storage.snapshot.missions      = State.data.missions;
-  Storage.snapshot.comments      = State.data.comments;
-  Storage.snapshot.insights      = State.data.insights;
-  Storage.snapshot.expenses      = State.data.expenses;
-  Storage.snapshot.likes         = State.data.likes;
-  Storage.snapshot.config        = State.data.config;
-  Storage.snapshot.defaultFee    = State.data.defaultFee;
+  State.data.groups = (await Storage.get('groups')) || SEED_GROUPS;
+  State.data.participants = (await Storage.get('participants')) || SEED_PARTICIPANTS;
+  State.data.announcements = (await Storage.get('announcements')) || SEED_ANNOUNCEMENTS;
+  State.data.notices = (await Storage.get('notices')) || SEED_NOTICES;
+  State.data.missions = (await Storage.get('missions')) || [];
+  State.data.comments = (await Storage.get('comments')) || [];
+  State.data.insights = (await Storage.get('insights')) || [];
+  State.data.expenses = (await Storage.get('expenses')) || [];
+  State.data.likes = (await Storage.get('likes')) || [];
+  State.data.config = (await Storage.get('config')) || DEFAULT_CONFIG;
+  State.data.defaultFee = (await Storage.get('defaultFee')) || 0;
 
   // Migration: rename g5 "관계와 감성" → "커플/결혼/리뷰"
   const g5 = State.data.groups.find(g => g.id === 'g5');
@@ -3987,23 +3477,24 @@ async function initApp() {
     g5.desc = 'COUPLES, WEDDING & REVIEWS';
   }
 
-  // 3. If no remote room connected yet, show the sync setup screen FIRST
-  if (Storage.mode !== 'remote') {
-    renderSyncSetupScreen();
-    return;
-  }
+  await Storage.set('groups', State.data.groups);
+  await Storage.set('participants', State.data.participants);
+  await Storage.set('announcements', State.data.announcements);
+  await Storage.set('notices', State.data.notices);
+  await Storage.set('config', State.data.config);
 
-  // 4. Seed change-detection hashes for current snapshot
+  // ──────────────────────────────────────────────────────────
+  // REAL-TIME SYNC: seed change-detection hashes, wire callback,
+  // start polling. From now on any remote write (web or app) is
+  // detected within ~2.5s (or instantly on visibility/focus).
+  // ──────────────────────────────────────────────────────────
   for (const k of Storage.SYNC_KEYS) {
-    Storage.remoteHashes[k] = Storage.hash(Storage.snapshot[k]);
+    Storage.hashes[k] = Storage.hash(Storage.cache[k]);
   }
-
-  // 5. Wire change handler + start sync loop
   Storage.onChange(applyRemoteChanges);
-  Storage.onStatus(updateSyncStatusBadge);
   Storage.startSync();
 
-  // 6. Auto-restore session from local device storage
+  // Auto-restore session from local device storage
   const session = LocalStore.get('session');
   if (session && session.role === 'admin') {
     State.user = { id: 'admin', role: 'admin' };
@@ -4077,25 +3568,26 @@ function toast(msg, type = 'info') {
 }
 
 /* ========================================================
-   REAL-TIME SYNC — UI GLUE
-   Bridges Storage.snapshot → State.data → on-screen render
+   REAL-TIME SYNC GLUE
+   Bridges Storage cache → State.data → on-screen re-render
    ======================================================== */
 function applyRemoteChanges(changedKeys) {
   if (!changedKeys || changedKeys.length === 0) return;
 
-  // 1. Pull new values from Storage.snapshot into State.data
+  // 1. Pull new values from Storage cache into State.data
   for (const key of changedKeys) {
-    const v = Storage.snapshot[key];
+    const v = Storage.cache[key];
     if (key === 'config') {
       State.data.config = v || State.data.config || DEFAULT_CONFIG;
     } else if (key === 'defaultFee') {
       State.data.defaultFee = (v != null) ? v : (State.data.defaultFee || 0);
     } else if (key in State.data) {
+      // List-shaped data: fall back to [] if remote is null
       State.data[key] = v || (Array.isArray(State.data[key]) ? [] : (State.data[key] || null));
     }
   }
 
-  // 2. If the logged-in participant was deleted remotely, drop to login
+  // 2. If logged-in participant was deleted remotely, drop them to login screen
   if (State.user && State.user.role !== 'admin') {
     const still = State.data.participants.find(p => p.id === State.user.id);
     if (!still) {
@@ -4114,15 +3606,13 @@ function applyRemoteChanges(changedKeys) {
   // 3. Re-render whichever surface is currently visible
   const appHidden = document.getElementById('app')?.classList.contains('hidden');
   if (appHidden) {
-    // Login screen: refresh the chip list (participants may have changed)
-    if (document.getElementById('member-list')) {
-      try { renderLoginScreen(); } catch(e) {}
-    }
+    // We're on the login screen — refresh the participant chips list
+    try { renderLoginScreen(); } catch(e) {}
   } else {
     rerenderCurrentView();
   }
 
-  // 4. Subtle visual confirmation
+  // 4. Show a subtle visual confirmation
   showSyncPulse(changedKeys);
 }
 
@@ -4130,10 +3620,10 @@ function rerenderCurrentView() {
   const m = document.getElementById('main-view');
   if (!m) return;
 
-  // Don't disrupt an open modal — modal owns its own state
+  // Never disrupt an open modal — modal owns its own state
   if (document.getElementById('modal-backdrop')) return;
 
-  // Don't yank focus from a user actively typing
+  // Never yank focus from a user actively typing — defer until they're idle
   const active = document.activeElement;
   if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
     return;
@@ -4151,6 +3641,7 @@ function rerenderCurrentView() {
   } catch(e) {
     console.error('rerenderCurrentView failed:', e);
   }
+  // Restore scroll without smooth animation (instant feels better here)
   window.scrollTo(0, scrollY);
 }
 
@@ -4173,211 +3664,6 @@ function showSyncPulse(keys) {
   el.classList.add('visible');
   clearTimeout(el._t);
   el._t = setTimeout(() => el.classList.remove('visible'), 1800);
-}
-
-function updateSyncStatusBadge(status) {
-  let el = document.getElementById('sync-status');
-  if (!el) return;
-  el.dataset.status = status;
-  const txt = { synced: 'SYNCED', saving: 'SAVING…', error: 'OFFLINE' }[status] || '';
-  const dot = el.querySelector('.ss-dot');
-  const label = el.querySelector('.ss-label');
-  if (label) label.textContent = txt;
-}
-
-/* ========================================================
-   SYNC SETUP SCREEN — first-run room creation / join
-   ======================================================== */
-function renderSyncSetupScreen() {
-  // Hide both the login screen and the app while setup is active
-  document.getElementById('login-screen').classList.add('hidden');
-  document.getElementById('app').classList.add('hidden');
-
-  // Build/reuse the dedicated setup overlay
-  let ss = document.getElementById('sync-setup-screen');
-  if (!ss) {
-    ss = document.createElement('div');
-    ss.id = 'sync-setup-screen';
-    document.body.appendChild(ss);
-  }
-  ss.classList.remove('hidden');
-  ss.innerHTML = `
-    <div class="sync-setup">
-      <div class="sync-setup-card">
-        <div class="ss-brand">
-          <div class="ss-brand-mark">쌩존</div>
-          <div class="ss-brand-sub">CROSS-DEVICE SYNC SETUP</div>
-        </div>
-
-        <h1 class="ss-title">웹 ↔ 앱 실시간 연동</h1>
-        <p class="ss-lead">
-          이 기기를 다른 기기와 같은 데이터로 연결하려면 <strong>동기화 룸</strong>이 필요합니다.<br>
-          처음 시작하는 경우 새 룸을 만들고, 이미 다른 기기에서 만든 적이 있다면 그 룸 ID로 연결하세요.
-        </p>
-
-        <div class="ss-options">
-          <button class="ss-option ss-new" id="ss-new-btn">
-            <span class="ss-icon">🆕</span>
-            <span class="ss-h">새 동기화 룸 만들기</span>
-            <span class="ss-d">첫 기기에서 선택. 새 룸을 만들고 동기화 ID를 받습니다. 그 ID를 다른 기기에 입력하면 연결됩니다.</span>
-          </button>
-          <button class="ss-option ss-join" id="ss-join-btn">
-            <span class="ss-icon">🔗</span>
-            <span class="ss-h">기존 룸에 연결하기</span>
-            <span class="ss-d">다른 기기에서 받은 동기화 ID를 붙여넣어 같은 데이터를 공유합니다.</span>
-          </button>
-        </div>
-
-        <div class="ss-result hidden" id="ss-result"></div>
-
-        <div class="ss-footnote">
-          저장소: <code>jsonblob.com</code> · 무료 · 75일 무접속 시 자동 삭제 · ID가 곧 비밀번호이니 외부에 공유하지 마세요.
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.getElementById('ss-new-btn').onclick = createNewSyncRoomFlow;
-  document.getElementById('ss-join-btn').onclick = openJoinSyncRoomForm;
-}
-
-function hideSyncSetupScreen() {
-  const ss = document.getElementById('sync-setup-screen');
-  if (ss) ss.classList.add('hidden');
-  document.getElementById('login-screen').classList.remove('hidden');
-}
-
-async function createNewSyncRoomFlow() {
-  const resultEl = document.getElementById('ss-result');
-  resultEl.className = 'ss-result';
-  resultEl.innerHTML = `<div class="ss-loading"><span class="ss-spinner"></span> 동기화 룸을 생성 중...</div>`;
-
-  try {
-    const seed = {
-      groups: State.data.groups,
-      participants: State.data.participants,
-      announcements: State.data.announcements,
-      notices: State.data.notices,
-      missions: State.data.missions,
-      comments: State.data.comments,
-      insights: State.data.insights,
-      expenses: State.data.expenses,
-      likes: State.data.likes,
-      config: State.data.config,
-      defaultFee: State.data.defaultFee
-    };
-    const blobId = await Storage.createNewRoom(seed);
-
-    resultEl.innerHTML = `
-      <div class="ss-success">
-        <div class="ss-success-h">✅ 새 동기화 룸이 생성되었습니다</div>
-        <div class="ss-id-card">
-          <label class="ss-id-label">동기화 ID</label>
-          <div class="ss-id-display">
-            <code id="ss-id-text">${escapeHtml(blobId)}</code>
-            <button class="btn btn-sm btn-primary" id="ss-copy-btn">복사</button>
-          </div>
-          <div class="ss-id-note">
-            💡 <strong>이 ID를 다른 기기(웹 또는 앱)에 입력하면 즉시 같은 데이터로 연결</strong>됩니다.<br>
-            ⚠️ ID를 분실하면 동기화가 불가능합니다. 카톡 나에게/메모 앱 등에 백업해두세요.
-          </div>
-        </div>
-        <button class="btn btn-primary ss-continue" id="ss-continue-btn">→ 로그인 화면으로 이동</button>
-      </div>
-    `;
-
-    document.getElementById('ss-copy-btn').onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(blobId);
-        toast('동기화 ID가 복사되었습니다.', 'success');
-      } catch(e) {
-        const range = document.createRange();
-        range.selectNodeContents(document.getElementById('ss-id-text'));
-        const sel = window.getSelection();
-        sel.removeAllRanges(); sel.addRange(range);
-        toast('직접 복사해주세요 (선택됨).', 'info');
-      }
-    };
-    document.getElementById('ss-continue-btn').onclick = () => {
-      Storage.onChange(applyRemoteChanges);
-      Storage.onStatus(updateSyncStatusBadge);
-      Storage.startSync();
-      hideSyncSetupScreen();
-      renderLoginScreen();
-    };
-  } catch(e) {
-    resultEl.innerHTML = `
-      <div class="ss-error">
-        <div class="ss-error-h">❌ 룸 생성 실패</div>
-        <div class="ss-error-msg">${escapeHtml(e.message || String(e))}</div>
-        <div class="ss-error-hint">
-          네트워크 연결을 확인하거나 잠시 후 다시 시도해주세요.<br>
-          (브라우저의 광고차단/추적방지 기능이 jsonblob.com 호출을 막을 수 있습니다.)
-        </div>
-        <button class="btn btn-ghost" id="ss-retry-btn">다시 시도</button>
-      </div>
-    `;
-    document.getElementById('ss-retry-btn').onclick = createNewSyncRoomFlow;
-  }
-}
-
-function openJoinSyncRoomForm() {
-  const resultEl = document.getElementById('ss-result');
-  resultEl.className = 'ss-result';
-  resultEl.innerHTML = `
-    <div class="ss-join-form">
-      <label class="ss-join-label">다른 기기에서 받은 동기화 ID를 입력하세요</label>
-      <input type="text" id="ss-id-input" class="input ss-id-input" placeholder="예: 5226571730043f8b22dadc20" autocomplete="off" spellcheck="false">
-      <div class="ss-btns">
-        <button class="btn btn-primary" id="ss-confirm-join">연결</button>
-        <button class="btn btn-ghost" id="ss-cancel-join">취소</button>
-      </div>
-      <div id="ss-join-msg" class="ss-msg"></div>
-    </div>
-  `;
-  const input = document.getElementById('ss-id-input');
-  setTimeout(() => input && input.focus(), 50);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') doJoinSyncRoom(); });
-  document.getElementById('ss-confirm-join').onclick = doJoinSyncRoom;
-  document.getElementById('ss-cancel-join').onclick = () => { resultEl.classList.add('hidden'); resultEl.innerHTML = ''; };
-}
-
-async function doJoinSyncRoom() {
-  const id = document.getElementById('ss-id-input').value.trim();
-  const msg = document.getElementById('ss-join-msg');
-  msg.className = 'ss-msg loading';
-  msg.innerHTML = '<span class="ss-spinner"></span> 연결 중...';
-  try {
-    await Storage.connectToBlob(id);
-    pullSnapshotIntoState();
-    msg.className = 'ss-msg success';
-    msg.textContent = '✅ 연결되었습니다. 잠시 후 로그인 화면으로 이동합니다...';
-    setTimeout(() => {
-      Storage.onChange(applyRemoteChanges);
-      Storage.onStatus(updateSyncStatusBadge);
-      Storage.startSync();
-      hideSyncSetupScreen();
-      renderLoginScreen();
-    }, 700);
-  } catch(e) {
-    msg.className = 'ss-msg error';
-    msg.textContent = '❌ ' + (e.message || String(e));
-  }
-}
-
-function pullSnapshotIntoState() {
-  const s = Storage.snapshot;
-  State.data.groups        = s.groups        || SEED_GROUPS;
-  State.data.participants  = s.participants  || SEED_PARTICIPANTS;
-  State.data.announcements = s.announcements || SEED_ANNOUNCEMENTS;
-  State.data.notices       = s.notices       || SEED_NOTICES;
-  State.data.missions      = s.missions      || [];
-  State.data.comments      = s.comments      || [];
-  State.data.insights      = s.insights      || [];
-  State.data.expenses      = s.expenses      || [];
-  State.data.likes         = s.likes         || [];
-  State.data.config        = s.config        || DEFAULT_CONFIG;
-  State.data.defaultFee    = s.defaultFee != null ? s.defaultFee : 0;
 }
 
 /* ========================================================
@@ -5806,34 +5092,7 @@ function renderAdminBudget(host) {
 function renderAdminConfig(host) {
   const cfg = getConfig();
   const dows = ['일','월','화','수','목','금','토'];
-  const syncMode = Storage.mode === 'remote' ? '✅ 연결됨' : '⚠️ 로컬만';
-  const syncId = Storage.blobId || '(연결되지 않음)';
   host.innerHTML = `
-    <div class="sync-panel">
-      <div class="sync-panel-h">⚡ 동기화 설정 (웹 ↔ 앱)</div>
-      <div class="sync-panel-row">
-        <span class="lbl">상태</span>
-        <span class="val" style="color:${Storage.mode === 'remote' ? 'var(--good)' : 'var(--gold)'}">${syncMode}</span>
-      </div>
-      <div class="sync-panel-row">
-        <span class="lbl">동기화 ID</span>
-        <span class="val" id="admin-sync-id-display">${escapeHtml(syncId)}</span>
-      </div>
-      <div class="sync-panel-actions">
-        ${Storage.mode === 'remote' ? `
-          <button class="btn btn-ghost btn-sm" onclick="copyAdminSyncId()">📋 ID 복사</button>
-          <button class="btn btn-ghost btn-sm" onclick="forcePullFromRemote()">🔄 강제 동기화</button>
-          <button class="btn btn-danger btn-sm" onclick="disconnectSyncRoom()">연결 해제</button>
-        ` : `
-          <button class="btn btn-primary btn-sm" onclick="reopenSyncSetup()">동기화 룸 설정</button>
-        `}
-      </div>
-      <div class="sync-panel-note">
-        💡 다른 기기(웹/앱)에서 같은 데이터를 보려면, 이 ID를 그 기기에 입력해 같은 룸에 연결하세요.
-        ${Storage.mode === 'remote' ? '<br>📡 백그라운드에서 4초마다 자동 동기화, 화면 복귀/포커스 시 즉시 갱신됩니다.' : ''}
-      </div>
-    </div>
-
     <p style="font-size:13px; color:var(--ink-mute); margin-bottom:18px;">시즌 일정과 주간 목표를 설정하면 대구역 카운트다운·캘린더·출석률 계산에 반영됩니다.</p>
 
     <div class="field"><label>시즌 이름</label><input id="cfg-name" class="input" value="${escapeHtml(cfg.seasonName)}"></div>
@@ -5867,59 +5126,6 @@ function renderAdminConfig(host) {
     </div>
   `;
 }
-
-async function copyAdminSyncId() {
-  if (!Storage.blobId) return;
-  try {
-    await navigator.clipboard.writeText(Storage.blobId);
-    toast('동기화 ID가 복사되었습니다.', 'success');
-  } catch(e) {
-    const el = document.getElementById('admin-sync-id-display');
-    if (el) {
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      const sel = window.getSelection();
-      sel.removeAllRanges(); sel.addRange(range);
-      toast('직접 복사해주세요 (선택됨).', 'info');
-    }
-  }
-}
-window.copyAdminSyncId = copyAdminSyncId;
-
-async function forcePullFromRemote() {
-  toast('서버에서 최신 데이터를 가져오는 중...');
-  const changed = await Storage.pollOnce();
-  if (changed.length === 0) toast('이미 최신 상태입니다.', 'success');
-  else toast(`${changed.length}개 항목 업데이트됨`, 'success');
-}
-window.forcePullFromRemote = forcePullFromRemote;
-
-async function disconnectSyncRoom() {
-  if (!confirm('동기화 룸 연결을 해제하시겠습니까?\n\n이 기기는 더 이상 다른 기기와 동기화되지 않습니다.\n(데이터 자체는 보존됩니다. 원할 때 다시 ID로 연결 가능.)')) return;
-  Storage.disconnectRoom();
-  toast('동기화가 해제되었습니다.', 'success');
-  // Re-render admin so panel reflects state
-  const body = document.getElementById('admin-body');
-  if (body) renderAdminConfig(body);
-}
-window.disconnectSyncRoom = disconnectSyncRoom;
-
-function reopenSyncSetup() {
-  // Push current state into snapshot so a "new room" can include it
-  Storage.snapshot.groups        = State.data.groups;
-  Storage.snapshot.participants  = State.data.participants;
-  Storage.snapshot.announcements = State.data.announcements;
-  Storage.snapshot.notices       = State.data.notices;
-  Storage.snapshot.missions      = State.data.missions;
-  Storage.snapshot.comments      = State.data.comments;
-  Storage.snapshot.insights      = State.data.insights;
-  Storage.snapshot.expenses      = State.data.expenses;
-  Storage.snapshot.likes         = State.data.likes;
-  Storage.snapshot.config        = State.data.config;
-  Storage.snapshot.defaultFee    = State.data.defaultFee;
-  renderSyncSetupScreen();
-}
-window.reopenSyncSetup = reopenSyncSetup;
 
 async function saveConfig() {
   const cfg = {
