@@ -1739,6 +1739,496 @@ section { margin-bottom: 36px; }
   .week-grid { grid-template-columns: 1fr; }
   .report-preview .report-stats { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* =================== MISSION INSIGHT PANEL =================== */
+.meta-tag {
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  padding: 2px 8px;
+  border: 1px solid;
+}
+.meta-tag.has-insight { color: var(--good); border-color: var(--good); }
+.meta-tag.pending { color: var(--gold); border-color: var(--gold); }
+.meta-tag.overdue { color: var(--bad); border-color: var(--bad); }
+
+.insight-panel {
+  margin-top: 14px;
+  margin-bottom: 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+}
+.insight-panel.readonly { padding: 14px 18px; }
+.insight-panel.editable summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.insight-panel.editable summary::-webkit-details-marker { display: none; }
+.insight-panel.editable[open] summary { border-bottom: 1px solid var(--line); }
+.insight-panel.editable summary .ip-toggle {
+  font-family: var(--font-mono-display);
+  color: var(--ink-mute);
+  transition: transform 0.2s;
+}
+.insight-panel.editable[open] summary .ip-toggle { transform: rotate(180deg); }
+
+.ip-eyebrow {
+  font-family: var(--font-mono-display);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+.insight-panel.readonly .ip-eyebrow { margin-bottom: 12px; display: block; }
+
+.ip-body { padding: 16px 18px 18px; }
+.ip-hint {
+  font-size: 12px;
+  color: var(--ink-mute);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.ip-input-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ip-field label {
+  display: block;
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+}
+.ip-field input {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--font-mono-display);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  outline: none;
+}
+.ip-field input:focus { border-color: var(--accent); }
+@media (max-width: 700px) {
+  .ip-input-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.ip-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ip-updated {
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink-mute);
+  margin-left: auto;
+}
+
+.ip-stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.ip-stat { text-align: center; }
+.ip-stat-label {
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+}
+.ip-stat-value {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+@media (max-width: 700px) {
+  .ip-stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+}
+
+/* =================== DASHBOARD TILES =================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.dashboard-grid.personal-grid { grid-template-columns: repeat(6, 1fr); }
+.dash-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 16px 14px;
+  position: relative;
+  overflow: hidden;
+}
+.dash-card.big {
+  grid-column: span 6;
+  padding: 22px 24px;
+}
+.dash-card.highlight {
+  background: linear-gradient(135deg, rgba(255,42,42,0.08) 0%, rgba(255,210,63,0.04) 100%);
+  border-color: var(--accent);
+}
+.dash-card.highlight::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,42,42,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.dc-icon {
+  font-size: 18px;
+  position: absolute;
+  top: 12px; right: 12px;
+  opacity: 0.7;
+}
+.dc-label {
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+.dash-card.big .dc-label { font-size: 12px; }
+.dc-value {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+.dash-card.big .dc-value { font-size: 52px; color: var(--ink); }
+.dash-card.highlight.big .dc-value { color: var(--ink); }
+.dc-sub {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--ink-mute);
+  font-family: var(--font-mono-display);
+  letter-spacing: 0.08em;
+}
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: repeat(3, 1fr); }
+  .dashboard-grid.personal-grid { grid-template-columns: repeat(3, 1fr); }
+  .dash-card.big { grid-column: span 3; }
+}
+@media (max-width: 500px) {
+  .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid.personal-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-card.big { grid-column: span 2; }
+  .dash-card.big .dc-value { font-size: 38px; }
+}
+
+/* =================== FAME TABLE =================== */
+.fame-table th, .fame-table td { text-align: center; }
+.fame-table td:nth-child(2) { text-align: left; }
+.fame-table td { font-family: var(--font-mono-display); font-size: 13px; letter-spacing: 0.04em; }
+
+/* =================== GROWTH CHART AREA =================== */
+.growth-controls { margin-top: 32px; margin-bottom: 16px; }
+.growth-mode-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.growth-hint { font-size: 12px; color: var(--ink-mute); margin-bottom: 12px; line-height: 1.5; }
+.main-growth-chart { height: 360px; background: var(--bg-2); border: 1px solid var(--line); padding: 18px; }
+
+/* =================== INSIGHT SUMMARY CARDS =================== */
+.insight-summary-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.isc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.isc-title-block { flex: 1; min-width: 0; }
+.isc-ttl { font-weight: 700; font-size: 15px; line-height: 1.3; margin-bottom: 4px; word-break: break-word; }
+.isc-meta { font-family: var(--font-mono-display); font-size: 11px; letter-spacing: 0.1em; color: var(--ink-mute); }
+.isc-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.isc-stat {
+  text-align: center;
+  padding: 10px 4px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.isc-lbl {
+  font-family: var(--font-mono-display);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+}
+.isc-val {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+.isc-stat .delta-pill { font-size: 10px; }
+.isc-foot {
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+}
+@media (max-width: 700px) {
+  .isc-stats-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* =================== BEFORE & AFTER (FOLLOWER GROWTH) =================== */
+.fb-section {
+  margin-top: 32px;
+  margin-bottom: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.fb-section-head { margin-bottom: 18px; }
+
+.fb-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+.fb-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 18px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.fb-card.before { border-left: 4px solid var(--ink-soft); }
+.fb-card.after { border-left: 4px solid var(--accent); }
+.fb-eyebrow {
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--ink-mute);
+  margin-bottom: 6px;
+}
+.fb-card.after .fb-eyebrow { color: var(--accent); }
+.fb-label {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.fb-shot {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  margin-bottom: 12px;
+  cursor: zoom-in;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fb-shot img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s;
+}
+.fb-shot:hover img { transform: scale(1.02); }
+.fb-empty-shot {
+  width: 100%;
+  background: var(--bg);
+  border: 1px dashed var(--line-2);
+  margin-bottom: 12px;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-mute);
+}
+.fbe-icon { font-size: 36px; opacity: 0.4; margin-bottom: 8px; }
+.fbe-msg { font-family: var(--font-mono-display); font-size: 11px; letter-spacing: 0.12em; }
+
+.fb-count {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.fbc-num {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 32px;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+}
+.fb-count.empty .fbc-num { color: var(--ink-mute); }
+.fbc-unit {
+  font-family: var(--font-mono-display);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--ink-mute);
+}
+.fb-time {
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+.fb-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.fb-arrow-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+}
+.fb-arrow-empty {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 48px;
+  color: var(--ink-mute);
+  opacity: 0.3;
+}
+.fb-growth {
+  text-align: center;
+  padding: 18px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  width: 100%;
+}
+.fb-growth.up { border-color: var(--good); }
+.fb-growth.down { border-color: var(--bad); }
+.fbg-arrow {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.fb-growth.up .fbg-arrow { color: var(--good); }
+.fb-growth.down .fbg-arrow { color: var(--bad); }
+.fb-growth.flat .fbg-arrow { color: var(--ink-mute); }
+.fbg-lbl {
+  font-family: var(--font-mono-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--ink-mute);
+  margin-bottom: 6px;
+}
+.fbg-num {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.fb-growth.up .fbg-num { color: var(--good); }
+.fb-growth.down .fbg-num { color: var(--bad); }
+.fbg-pct {
+  font-family: var(--font-mono-display);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+.fb-growth.up .fbg-pct { color: var(--good); }
+.fb-growth.down .fbg-pct { color: var(--bad); }
+
+@media (max-width: 780px) {
+  .fb-grid { grid-template-columns: 1fr; }
+  .fb-arrow-cell { min-width: 0; }
+  .fb-arrow-empty { font-size: 28px; transform: rotate(90deg); }
+  .fb-shot, .fb-empty-shot { aspect-ratio: 16 / 10; }
+}
+
+/* =================== FOLLOWER LEADERBOARD (in Hall of Fame) =================== */
+.follower-board {
+  margin-top: 36px;
+  margin-bottom: 28px;
+}
+.fbl-list { display: flex; flex-direction: column; gap: 6px; }
+.fbl-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+}
+.fbl-row.top-3 { border-left: 3px solid var(--gold); }
+.fbl-rank {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 22px;
+  color: var(--ink-mute);
+  text-align: center;
+}
+.fbl-row.top-3 .fbl-rank { color: var(--gold); }
+.fbl-who .name { font-weight: 700; font-size: 14px; }
+.fbl-who .real { font-size: 11px; color: var(--ink-mute); font-family: var(--font-mono-display); letter-spacing: 0.08em; }
+.fbl-before, .fbl-after {
+  font-family: var(--font-mono-display);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.fbl-before { color: var(--ink-mute); }
+.fbl-after { color: var(--ink); }
+.fbl-delta {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  text-align: right;
+  min-width: 80px;
+}
+.fbl-delta.up { color: var(--good); }
+.fbl-delta.down { color: var(--bad); }
+.fbl-delta.flat { color: var(--ink-mute); }
+.fbl-delta .pct { display: block; font-family: var(--font-mono-display); font-size: 10px; letter-spacing: 0.1em; font-weight: 400; margin-top: 2px; }
+@media (max-width: 700px) {
+  .fbl-row { grid-template-columns: 30px 1fr auto; row-gap: 6px; }
+  .fbl-before, .fbl-after { grid-column: 2; font-size: 11px; }
+  .fbl-delta { grid-column: 3; grid-row: 1 / span 3; }
+}
 </style>
 </head>
 <body>
@@ -2284,6 +2774,10 @@ function renderMissionCard(m) {
   const canEdit = State.user.role === 'admin' || (me && me.id === m.participantId);
   const likeCount = State.data.likes.filter(l => l.missionId === m.id).length;
   const myLike = me && State.data.likes.find(l => l.missionId === m.id && l.participantId === me.id);
+  const fi = m.finalInsight || {};
+  const hasInsight = fi.recordedAt != null;
+  const daysSince = Math.floor((Date.now() - m.createdAt) / 86400000);
+  const daysLeft = Math.max(0, 6 - daysSince);
 
   return `
     <article class="mission" id="mission-${m.id}">
@@ -2303,7 +2797,11 @@ function renderMissionCard(m) {
         <span>${m.week}주차</span>
         <span>${formatTime(m.createdAt)}</span>
         <span>${topLevel.length}개 피드백</span>
+        ${hasInsight ? '<span class="meta-tag has-insight">📊 인사이트 등록됨</span>' : (daysLeft > 0 ? `<span class="meta-tag pending">D-${daysLeft} 인사이트 입력</span>` : '<span class="meta-tag overdue">📊 인사이트 미입력</span>')}
       </div>
+
+      ${renderMissionInsightPanel(m, canEdit, hasInsight)}
+
       <div class="mission-actions">
         <button class="btn btn-ghost btn-sm like-btn ${myLike ? 'liked' : ''}" onclick="toggleLike('${m.id}')" ${!me ? 'disabled' : ''}>
           ${myLike ? '❤️' : '🤍'} <span class="like-count">${likeCount}</span>
@@ -2324,6 +2822,103 @@ function renderMissionCard(m) {
     </article>
   `;
 }
+
+function renderMissionInsightPanel(m, canEdit, hasInsight) {
+  const fi = m.finalInsight || { views:'', likes:'', comments:'', shares:'', saves:'' };
+  // Read-only display for non-owners
+  if (!canEdit) {
+    if (!hasInsight) return '';
+    return `
+      <div class="insight-panel readonly">
+        <div class="ip-eyebrow">📊 6일 누적 인사이트</div>
+        <div class="ip-stats-row">
+          <div class="ip-stat"><div class="ip-stat-label">조회수</div><div class="ip-stat-value">${(fi.views || 0).toLocaleString()}</div></div>
+          <div class="ip-stat"><div class="ip-stat-label">좋아요</div><div class="ip-stat-value">${(fi.likes || 0).toLocaleString()}</div></div>
+          <div class="ip-stat"><div class="ip-stat-label">댓글</div><div class="ip-stat-value">${(fi.comments || 0).toLocaleString()}</div></div>
+          <div class="ip-stat"><div class="ip-stat-label">공유</div><div class="ip-stat-value">${(fi.shares || 0).toLocaleString()}</div></div>
+          <div class="ip-stat"><div class="ip-stat-label">저장</div><div class="ip-stat-value">${(fi.saves || 0).toLocaleString()}</div></div>
+        </div>
+      </div>
+    `;
+  }
+  // Editable input panel for owner / admin
+  return `
+    <details class="insight-panel editable" ${hasInsight ? '' : 'open'}>
+      <summary>
+        <span class="ip-eyebrow">📊 6일 누적 인사이트 ${hasInsight ? '수정' : '입력'}</span>
+        <span class="ip-toggle">▾</span>
+      </summary>
+      <div class="ip-body">
+        <p class="ip-hint">업로드 후 6일이 지난 시점의 누적 수치를 입력하세요. 명예의 전당 대시보드와 내 성장 그래프에 반영됩니다.</p>
+        <div class="ip-input-grid">
+          <div class="ip-field">
+            <label>조회수</label>
+            <input type="number" min="0" id="ip-${m.id}-views" value="${fi.views ?? ''}" placeholder="0">
+          </div>
+          <div class="ip-field">
+            <label>좋아요 ❤️</label>
+            <input type="number" min="0" id="ip-${m.id}-likes" value="${fi.likes ?? ''}" placeholder="0">
+          </div>
+          <div class="ip-field">
+            <label>댓글 💬</label>
+            <input type="number" min="0" id="ip-${m.id}-comments" value="${fi.comments ?? ''}" placeholder="0">
+          </div>
+          <div class="ip-field">
+            <label>공유 🔁</label>
+            <input type="number" min="0" id="ip-${m.id}-shares" value="${fi.shares ?? ''}" placeholder="0">
+          </div>
+          <div class="ip-field">
+            <label>저장 🔖</label>
+            <input type="number" min="0" id="ip-${m.id}-saves" value="${fi.saves ?? ''}" placeholder="0">
+          </div>
+        </div>
+        <div class="ip-actions">
+          <button class="btn btn-primary btn-sm" onclick="saveMissionInsight('${m.id}')">${hasInsight ? '수정 저장' : '인사이트 등록'}</button>
+          ${hasInsight ? `<button class="btn btn-ghost btn-sm" onclick="clearMissionInsight('${m.id}')">초기화</button>` : ''}
+          ${hasInsight ? `<span class="ip-updated">최근 갱신: ${formatTime(fi.recordedAt)}</span>` : ''}
+        </div>
+      </div>
+    </details>
+  `;
+}
+
+async function saveMissionInsight(missionId) {
+  const m = State.data.missions.find(x => x.id === missionId);
+  if (!m) return;
+  const me = getCurrentParticipant();
+  if (State.user.role !== 'admin' && (!me || me.id !== m.participantId)) {
+    toast('본인 미션만 인사이트를 입력할 수 있습니다.');
+    return;
+  }
+  const get = (k) => {
+    const v = parseInt(document.getElementById(`ip-${missionId}-${k}`).value, 10);
+    return isNaN(v) ? 0 : Math.max(0, v);
+  };
+  m.finalInsight = {
+    views: get('views'),
+    likes: get('likes'),
+    comments: get('comments'),
+    shares: get('shares'),
+    saves: get('saves'),
+    recordedAt: Date.now()
+  };
+  await Storage.set('missions', State.data.missions);
+  toast('인사이트가 저장되었습니다.');
+  renderGroupContent();
+}
+
+async function clearMissionInsight(missionId) {
+  if (!confirm('이 미션의 인사이트를 초기화할까요?')) return;
+  const m = State.data.missions.find(x => x.id === missionId);
+  if (!m) return;
+  delete m.finalInsight;
+  await Storage.set('missions', State.data.missions);
+  toast('초기화 완료');
+  renderGroupContent();
+}
+
+window.saveMissionInsight = saveMissionInsight;
+window.clearMissionInsight = clearMissionInsight;
 
 window.toggleComments = (mid) => {
   document.getElementById('comments-' + mid).classList.toggle('hidden');
@@ -2581,7 +3176,7 @@ const SEED_GROUPS = [
   { id: 'g2', name: '뷰티·셀프케어', category: '뷰티/자기관리', icon: '💄', desc: 'BEAUTY & SELF-CARE' },
   { id: 'g3', name: '육아 패밀리', category: '육아/일상', icon: '👶', desc: 'PARENTING & FAMILY' },
   { id: 'g4', name: '푸드 라이프', category: '푸드/라이프스타일', icon: '🍰', desc: 'FOOD & LIFESTYLE' },
-  { id: 'g5', name: '관계와 감성', category: '관계/감성', icon: '💞', desc: 'RELATIONSHIP & EMOTION' }
+  { id: 'g5', name: '커플/결혼/리뷰', category: '커플/결혼/리뷰', icon: '💞', desc: 'COUPLES, WEDDING & REVIEWS' }
 ];
 
 const SEED_PARTICIPANTS = [
@@ -2694,6 +3289,14 @@ async function initApp() {
   State.data.likes = (await Storage.get('likes')) || [];
   State.data.config = (await Storage.get('config')) || DEFAULT_CONFIG;
   State.data.defaultFee = (await Storage.get('defaultFee')) || 0;
+
+  // Migration: rename g5 "관계와 감성" → "커플/결혼/리뷰"
+  const g5 = State.data.groups.find(g => g.id === 'g5');
+  if (g5 && g5.name === '관계와 감성') {
+    g5.name = '커플/결혼/리뷰';
+    g5.category = '커플/결혼/리뷰';
+    g5.desc = 'COUPLES, WEDDING & REVIEWS';
+  }
 
   await Storage.set('groups', State.data.groups);
   await Storage.set('participants', State.data.participants);
@@ -2999,38 +3602,35 @@ function openImageLightbox(src) {
 function computeParticipantScores(metric) {
   return State.data.participants.map(p => {
     const myMissions = State.data.missions.filter(m => m.participantId === p.id);
-    let total = 0, views = 0, comments = 0, saves = 0, shares = 0, likes = 0;
+    let total = 0, views = 0, comments = 0, saves = 0, shares = 0, insightLikes = 0, appLikes = 0;
     myMissions.forEach(m => {
-      const latest = getLatestInsight(m.id);
-      if (latest) {
-        views += latest.views || 0;
-        comments += latest.comments || 0;
-        saves += latest.saves || 0;
-        shares += latest.shares || 0;
+      const fi = m.finalInsight;
+      if (fi) {
+        views += fi.views || 0;
+        comments += fi.comments || 0;
+        saves += fi.saves || 0;
+        shares += fi.shares || 0;
+        insightLikes += fi.likes || 0;
       }
-      likes += State.data.likes.filter(l => l.missionId === m.id).length;
+      appLikes += State.data.likes.filter(l => l.missionId === m.id).length;
     });
-    total = views + comments + saves + shares;
-    const map = { total, views, comments, saves, shares, likes };
+    total = views + insightLikes + comments + saves + shares;
+    const map = { total, views, likes: insightLikes, comments, saves, shares, appLikes };
     return {
       participant: p,
       missionCount: myMissions.length,
+      reportedMissions: myMissions.filter(m => m.finalInsight).length,
       score: map[metric] || 0,
       all: map
     };
   }).sort((a, b) => b.score - a.score);
 }
 
-function getLatestInsight(missionId) {
-  const list = State.data.insights
-    .filter(i => i.missionId === missionId)
-    .sort((a, b) => b.day - a.day);
-  return list[0] || null;
-}
-
 function getMissionScore(missionId) {
-  const latest = getLatestInsight(missionId) || {};
-  return (latest.views || 0) + (latest.comments || 0) + (latest.saves || 0) + (latest.shares || 0);
+  const m = State.data.missions.find(x => x.id === missionId);
+  if (!m || !m.finalInsight) return 0;
+  const fi = m.finalInsight;
+  return (fi.views || 0) + (fi.likes || 0) + (fi.comments || 0) + (fi.saves || 0) + (fi.shares || 0);
 }
 
 function renderWeeklyBest() {
@@ -3123,32 +3723,178 @@ function renderAttendanceMatrix() {
   `;
 }
 
+function computeAggregateStats() {
+  let totalViews = 0, totalLikes = 0, totalComments = 0, totalShares = 0, totalSaves = 0;
+  let reportedMissions = 0;
+  State.data.missions.forEach(m => {
+    if (m.finalInsight) {
+      reportedMissions++;
+      totalViews += m.finalInsight.views || 0;
+      totalLikes += m.finalInsight.likes || 0;
+      totalComments += m.finalInsight.comments || 0;
+      totalShares += m.finalInsight.shares || 0;
+      totalSaves += m.finalInsight.saves || 0;
+    }
+  });
+  const totalMissions = State.data.missions.length;
+  const totalParticipants = State.data.participants.length;
+  const activeCreators = new Set(State.data.missions.filter(m => m.finalInsight).map(m => m.participantId)).size;
+  return {
+    totalViews, totalLikes, totalComments, totalShares, totalSaves,
+    grandTotal: totalViews + totalLikes + totalComments + totalShares + totalSaves,
+    totalMissions, reportedMissions, totalParticipants, activeCreators,
+    avgViewsPerMission: reportedMissions ? Math.round(totalViews / reportedMissions) : 0
+  };
+}
+
 function renderHallOfFame(host) {
   const metrics = [
     { id: 'total', label: 'TOTAL' },
     { id: 'views', label: '조회수' },
-    { id: 'comments', label: '댓글수' },
-    { id: 'saves', label: '저장수' },
-    { id: 'shares', label: '공유수' },
-    { id: 'likes', label: '❤️ 좋아요' }
+    { id: 'likes', label: '좋아요' },
+    { id: 'comments', label: '댓글' },
+    { id: 'shares', label: '공유' },
+    { id: 'saves', label: '저장' }
   ];
+
+  const agg = computeAggregateStats();
 
   host.innerHTML = `
     <div class="section-head">
       <div>
-        <div class="section-eyebrow">HALL OF FAME / 명예의 전당</div>
-        <h2 class="section-title">실시간 인사이트 랭킹</h2>
-        <div class="section-subtitle">참가자별 인사이트 합산 — 항목별로 전환해서 확인하세요.</div>
+        <div class="section-eyebrow">HALL OF FAME · DASHBOARD</div>
+        <h2 class="section-title">시즌 종합 대시보드</h2>
+        <div class="section-subtitle">참가자들이 입력한 6일 누적 인사이트가 실시간으로 집계됩니다.</div>
       </div>
     </div>
+
+    <!-- Aggregate dashboard tiles -->
+    <div class="dashboard-grid">
+      <div class="dash-card big highlight">
+        <div class="dc-label">총 인사이트 합계</div>
+        <div class="dc-value">${agg.grandTotal.toLocaleString()}</div>
+        <div class="dc-sub">${agg.reportedMissions} / ${agg.totalMissions} 미션 보고 완료 · ${agg.activeCreators} / ${agg.totalParticipants} 참여 중</div>
+      </div>
+      <div class="dash-card"><div class="dc-icon">👁️</div><div class="dc-label">총 조회수</div><div class="dc-value">${agg.totalViews.toLocaleString()}</div><div class="dc-sub">미션당 평균 ${agg.avgViewsPerMission.toLocaleString()}</div></div>
+      <div class="dash-card"><div class="dc-icon">❤️</div><div class="dc-label">총 좋아요</div><div class="dc-value">${agg.totalLikes.toLocaleString()}</div></div>
+      <div class="dash-card"><div class="dc-icon">💬</div><div class="dc-label">총 댓글</div><div class="dc-value">${agg.totalComments.toLocaleString()}</div></div>
+      <div class="dash-card"><div class="dc-icon">🔁</div><div class="dc-label">총 공유</div><div class="dc-value">${agg.totalShares.toLocaleString()}</div></div>
+      <div class="dash-card"><div class="dc-icon">🔖</div><div class="dc-label">총 저장</div><div class="dc-value">${agg.totalSaves.toLocaleString()}</div></div>
+    </div>
+
     ${renderWeeklyBest()}
+
     <div class="metric-tabs" id="fame-tabs">
       ${metrics.map(m => `<button class="metric-tab ${State.currentMetric === m.id ? 'active' : ''}" data-fame-metric="${m.id}" onclick="setFameMetric('${m.id}')">${m.label}</button>`).join('')}
     </div>
     <div id="fame-body"></div>
+
+    <h3 class="block-title" style="margin-top:36px;">📊 참가자별 종합 인사이트</h3>
+    <div class="table-wrap">
+      <table class="data-table fame-table">
+        <thead>
+          <tr>
+            <th>순위</th><th>참가자</th><th>보고</th>
+            <th>조회수</th><th>좋아요</th><th>댓글</th><th>공유</th><th>저장</th><th>합계</th>
+          </tr>
+        </thead>
+        <tbody>${renderFameTable()}</tbody>
+      </table>
+    </div>
+
+    ${renderFollowerLeaderboard()}
+
     ${renderAttendanceMatrix()}
   `;
   renderFameBody();
+}
+
+function renderFollowerLeaderboard() {
+  const entries = State.data.participants
+    .map(p => {
+      const b = p.followerBefore;
+      const a = p.followerAfter;
+      if (!b || !a || b.count == null || a.count == null) return null;
+      const diff = a.count - b.count;
+      const pct = b.count > 0 ? Math.round((diff / b.count) * 1000) / 10 : null;
+      return { participant: p, before: b.count, after: a.count, diff, pct };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.diff - a.diff);
+
+  // Aggregate growth for tile
+  const totalGrowth = entries.reduce((s, e) => s + e.diff, 0);
+  const totalParticipants = State.data.participants.length;
+
+  if (entries.length === 0) {
+    return `
+      <div class="follower-board">
+        <h3 class="block-title" style="margin-bottom:12px;">📈 BEFORE / AFTER · 팔로워 성장</h3>
+        <div class="no-data-msg">
+          <span class="em">NO DATA YET</span>
+          참가자들이 시즌 시작·종료 시점의 인증샷을 등록하면 여기에 성장 랭킹이 표시됩니다.
+        </div>
+      </div>
+    `;
+  }
+
+  const rows = entries.map((e, i) => {
+    const cls = e.diff > 0 ? 'up' : e.diff < 0 ? 'down' : 'flat';
+    const arrow = e.diff > 0 ? '▲' : e.diff < 0 ? '▼' : '—';
+    const sign = e.diff >= 0 ? '+' : '';
+    return `
+      <div class="fbl-row ${i < 3 ? 'top-3' : ''}">
+        <div class="fbl-rank">${i + 1}</div>
+        <div class="fbl-who">
+          <div class="name">${escapeHtml(e.participant.activity)}</div>
+          <div class="real">${escapeHtml(e.participant.realName)}</div>
+        </div>
+        <div class="fbl-before">시작 ${e.before.toLocaleString()}</div>
+        <div class="fbl-after">→ ${e.after.toLocaleString()}</div>
+        <div class="fbl-delta ${cls}">
+          ${arrow} ${sign}${e.diff.toLocaleString()}
+          ${e.pct != null ? `<span class="pct">${sign}${e.pct}%</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="follower-board">
+      <div class="att-header-row">
+        <h3 class="block-title" style="margin-bottom:0;">📈 BEFORE / AFTER · 팔로워 성장</h3>
+        <div class="att-summary">
+          <span>총 증가 ${totalGrowth >= 0 ? '+' : ''}${totalGrowth.toLocaleString()}명</span>
+          <span>등록 ${entries.length} / ${totalParticipants}</span>
+        </div>
+      </div>
+      <p style="font-size:12px; color:var(--ink-mute); margin: 8px 0 14px;">참가자들이 직접 등록한 인스타그램 프로필 캡쳐 기반 팔로워 변화입니다.</p>
+      <div class="fbl-list">${rows}</div>
+    </div>
+  `;
+}
+
+function renderFameTable() {
+  const scores = computeParticipantScores('total').filter(s => s.reportedMissions > 0);
+  if (!scores.length) {
+    return '<tr><td colspan="9" class="empty-row">아직 인사이트가 등록되지 않았습니다. 소구역 미션 카드에서 6일 누적 인사이트를 입력해보세요.</td></tr>';
+  }
+  return scores.map((s, i) => {
+    const a = s.all;
+    return `
+      <tr>
+        <td style="font-family:var(--font-display); font-weight:var(--font-display-weight); font-size:18px; color:${i < 3 ? 'var(--accent)' : 'var(--ink-mute)'};">${i + 1}</td>
+        <td><strong>${escapeHtml(s.participant.activity)}</strong><br><span style="font-size:11px; color:var(--ink-mute);">${escapeHtml(s.participant.realName)}</span></td>
+        <td style="font-family:var(--font-mono-display); color:var(--ink-mute);">${s.reportedMissions}/${s.missionCount}</td>
+        <td>${a.views.toLocaleString()}</td>
+        <td>${a.likes.toLocaleString()}</td>
+        <td>${a.comments.toLocaleString()}</td>
+        <td>${a.shares.toLocaleString()}</td>
+        <td>${a.saves.toLocaleString()}</td>
+        <td style="font-family:var(--font-display); font-weight:var(--font-display-weight); color:var(--accent);">${a.total.toLocaleString()}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function setFameMetric(m) {
@@ -3162,13 +3908,13 @@ function setFameMetric(m) {
 function renderFameBody() {
   const wrap = document.getElementById('fame-body');
   if (!wrap) return;
-  const scores = computeParticipantScores(State.currentMetric).filter(s => s.missionCount > 0);
+  const scores = computeParticipantScores(State.currentMetric).filter(s => s.reportedMissions > 0);
 
   if (!scores.length) {
     wrap.innerHTML = `
       <div class="no-data-msg">
         <span class="em">NO DATA YET</span>
-        아직 인사이트가 입력되지 않았습니다. 미션 인증 후 인사이트를 입력해보세요.
+        아직 인사이트가 입력되지 않았습니다. 소구역에서 미션 카드의 📊 인사이트를 입력해주세요.
       </div>
     `;
     return;
@@ -3176,7 +3922,7 @@ function renderFameBody() {
 
   const top3 = scores.slice(0, 3);
   const rest = scores.slice(3);
-  const metricLabel = ({ total:'TOTAL', views:'조회수', comments:'댓글수', saves:'저장수', shares:'공유수', likes:'❤️ 좋아요' })[State.currentMetric];
+  const metricLabel = ({ total:'TOTAL', views:'조회수', likes:'좋아요', comments:'댓글', shares:'공유', saves:'저장' })[State.currentMetric];
 
   // Podium: 2nd, 1st, 3rd (visual order)
   const order = [top3[1], top3[0], top3[2]];
@@ -3199,7 +3945,7 @@ function renderFameBody() {
       <div class="rank-num">${i + 4}</div>
       <div class="who">
         <div class="activity">${escapeHtml(s.participant.activity)}</div>
-        <div class="meta">${escapeHtml(s.participant.realName)} · 미션 ${s.missionCount}개</div>
+        <div class="meta">${escapeHtml(s.participant.realName)} · 보고 ${s.reportedMissions}개</div>
       </div>
       <div class="score">${s.score.toLocaleString()}</div>
     </div>
@@ -3212,13 +3958,12 @@ function renderFameBody() {
 }
 
 /* ========================================================
-   MY INSIGHTS (PERSONAL DASHBOARD)
+   MY INSIGHTS — PERSONAL GROWTH DASHBOARD
    ======================================================== */
 let _chartInstances = {};
 
 function renderMyInsights(host) {
   const isAdmin = State.user.role === 'admin';
-  // Clear old charts
   Object.values(_chartInstances).forEach(c => { try { c.destroy(); } catch(e){} });
   _chartInstances = {};
 
@@ -3245,16 +3990,20 @@ function renderMyInsights(host) {
     </div>
   ` : '';
 
+  // Chronological (oldest → newest) so growth flows naturally left-to-right
   const myMissions = State.data.missions
     .filter(m => m.participantId === targetId)
-    .sort((a, b) => b.createdAt - a.createdAt);
+    .sort((a, b) => a.createdAt - b.createdAt);
+
+  const reported = myMissions.filter(m => m.finalInsight);
+  const personal = computePersonalTotals(myMissions);
 
   host.innerHTML = `
     <div class="section-head">
       <div>
-        <div class="section-eyebrow">MY INSIGHTS / 내 인사이트</div>
-        <h2 class="section-title">${isAdmin ? escapeHtml(participant.activity) + '의 대시보드' : '나의 7일 성장 일지'}</h2>
-        <div class="section-subtitle">미션 업로드 후 7일까지 조회수·댓글·저장·공유 수치를 매일 기록하세요. 그래프로 변화가 보입니다.</div>
+        <div class="section-eyebrow">MY INSIGHTS · GROWTH</div>
+        <h2 class="section-title">${isAdmin ? escapeHtml(participant.activity) + '의 대시보드' : '나의 성장 대시보드'}</h2>
+        <div class="section-subtitle">소구역에서 입력한 6일 누적 인사이트를 기준으로 콘텐츠별 변화와 증감율을 시각화합니다.</div>
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         ${!isAdmin ? `<button class="btn btn-ghost btn-sm" onclick="openProfileEditor()">✎ 프로필 수정</button>` : ''}
@@ -3263,21 +4012,219 @@ function renderMyInsights(host) {
       </div>
     </div>
     ${viewerSelect}
-    <div id="insight-list"></div>
+
+    <!-- Personal aggregate tiles -->
+    <div class="dashboard-grid personal-grid">
+      <div class="dash-card big highlight">
+        <div class="dc-label">총 인사이트 합계</div>
+        <div class="dc-value">${personal.total.toLocaleString()}</div>
+        <div class="dc-sub">${reported.length} / ${myMissions.length} 미션 보고 완료</div>
+      </div>
+      <div class="dash-card"><div class="dc-icon">👁️</div><div class="dc-label">조회수</div><div class="dc-value">${personal.views.toLocaleString()}</div><div class="dc-sub">평균 ${reported.length ? Math.round(personal.views/reported.length).toLocaleString() : 0}</div></div>
+      <div class="dash-card"><div class="dc-icon">❤️</div><div class="dc-label">좋아요</div><div class="dc-value">${personal.likes.toLocaleString()}</div><div class="dc-sub">평균 ${reported.length ? Math.round(personal.likes/reported.length).toLocaleString() : 0}</div></div>
+      <div class="dash-card"><div class="dc-icon">💬</div><div class="dc-label">댓글</div><div class="dc-value">${personal.comments.toLocaleString()}</div><div class="dc-sub">평균 ${reported.length ? Math.round(personal.comments/reported.length).toLocaleString() : 0}</div></div>
+      <div class="dash-card"><div class="dc-icon">🔁</div><div class="dc-label">공유</div><div class="dc-value">${personal.shares.toLocaleString()}</div><div class="dc-sub">평균 ${reported.length ? Math.round(personal.shares/reported.length).toLocaleString() : 0}</div></div>
+      <div class="dash-card"><div class="dc-icon">🔖</div><div class="dc-label">저장</div><div class="dc-value">${personal.saves.toLocaleString()}</div><div class="dc-sub">평균 ${reported.length ? Math.round(personal.saves/reported.length).toLocaleString() : 0}</div></div>
+    </div>
+
+    ${renderFollowerBeforeAfter(participant)}
+
+    ${reported.length === 0 ? `
+      <div class="no-data-msg" style="margin-top:24px;">
+        <span class="em">NO INSIGHT DATA</span>
+        ${myMissions.length === 0 ? '아직 인증한 미션이 없습니다. 소구역에서 미션을 먼저 인증해주세요.' : '미션은 있으나 6일 누적 인사이트가 아직 입력되지 않았습니다. 소구역 미션 카드의 📊 패널을 열어 입력해주세요.'}
+      </div>
+    ` : `
+      <div class="growth-controls">
+        <div class="growth-mode-tabs">
+          <button class="metric-tab ${(!State.growthMode || State.growthMode === 'absolute') ? 'active' : ''}" data-growth="absolute" onclick="setGrowthMode('absolute')">📈 누적값</button>
+          <button class="metric-tab ${State.growthMode === 'rate' ? 'active' : ''}" data-growth="rate" onclick="setGrowthMode('rate')">⚡ 증감율 (%)</button>
+        </div>
+      </div>
+
+      <h3 class="block-title">콘텐츠별 성장 추이</h3>
+      <p class="growth-hint">미션을 시간순으로 배열한 5개 지표의 추이입니다. <strong style="color:var(--accent);">증감율</strong> 모드는 이전 미션 대비 변화율(%)을 보여줍니다.</p>
+      <div class="chart-wrap-tall main-growth-chart">
+        <canvas id="growth-chart-main"></canvas>
+      </div>
+
+      <h3 class="block-title" style="margin-top:36px;">미션별 세부 인사이트</h3>
+      <div id="mission-cards-list"></div>
+    `}
   `;
 
-  const listHost = document.getElementById('insight-list');
-  if (!myMissions.length) {
-    listHost.innerHTML = `
-      <div class="no-data-msg">
-        <span class="em">NO MISSION</span>
-        ${isAdmin ? '이 참가자가 ' : ''}아직 인증한 미션이 없습니다. 소구역에서 미션을 먼저 인증해주세요.
-      </div>
-    `;
-    return;
+  if (reported.length > 0) {
+    renderGrowthChart(reported);
+    const listHost = document.getElementById('mission-cards-list');
+    // Display newest first in detail list
+    [...reported].reverse().forEach((m, i) => {
+      // Find the previous mission (chronologically before) to compute delta
+      const idxInReported = reported.indexOf(m);
+      const prev = idxInReported > 0 ? reported[idxInReported - 1] : null;
+      renderInsightSummaryCard(listHost, m, prev);
+    });
   }
+}
 
-  myMissions.forEach(m => renderInsightMissionCard(listHost, m));
+function computePersonalTotals(missions) {
+  const t = { views:0, likes:0, comments:0, shares:0, saves:0, total:0 };
+  missions.forEach(m => {
+    if (!m.finalInsight) return;
+    t.views += m.finalInsight.views || 0;
+    t.likes += m.finalInsight.likes || 0;
+    t.comments += m.finalInsight.comments || 0;
+    t.shares += m.finalInsight.shares || 0;
+    t.saves += m.finalInsight.saves || 0;
+  });
+  t.total = t.views + t.likes + t.comments + t.shares + t.saves;
+  return t;
+}
+
+function setGrowthMode(mode) {
+  State.growthMode = mode;
+  document.querySelectorAll('.growth-mode-tabs .metric-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.growth === mode);
+  });
+  // Re-render chart only
+  const isAdmin = State.user.role === 'admin';
+  const targetId = isAdmin ? State.adminInsightView : State.user.id;
+  const reported = State.data.missions
+    .filter(m => m.participantId === targetId && m.finalInsight)
+    .sort((a, b) => a.createdAt - b.createdAt);
+  renderGrowthChart(reported);
+}
+window.setGrowthMode = setGrowthMode;
+
+function renderGrowthChart(missionsAsc) {
+  const canvas = document.getElementById('growth-chart-main');
+  if (!canvas) return;
+  if (_chartInstances.main) { try { _chartInstances.main.destroy(); } catch(e){} }
+
+  const mode = State.growthMode || 'absolute';
+  const labels = missionsAsc.map(m => `W${m.week}\n${formatDateShort(new Date(m.createdAt))}`);
+
+  // Series builders
+  const series = (key) => missionsAsc.map(m => (m.finalInsight && m.finalInsight[key]) || 0);
+  // Growth rate: (current - prev) / prev * 100 — null when prev is 0 or first item
+  const rate = (key) => {
+    const vals = series(key);
+    return vals.map((v, i) => {
+      if (i === 0 || vals[i-1] === 0) return null;
+      return Math.round(((v - vals[i-1]) / vals[i-1]) * 1000) / 10;
+    });
+  };
+
+  const colors = {
+    views: '#ff2a2a', likes: '#ff7eb6', comments: '#ffd23f', shares: '#7ab8ff', saves: '#6bff8a'
+  };
+
+  const datasets = mode === 'rate' ? [
+    { label: '조회수 증감율', data: rate('views'), borderColor: colors.views, backgroundColor: colors.views + '22', tension: 0.3, spanGaps: true },
+    { label: '좋아요 증감율', data: rate('likes'), borderColor: colors.likes, backgroundColor: colors.likes + '22', tension: 0.3, spanGaps: true },
+    { label: '댓글 증감율', data: rate('comments'), borderColor: colors.comments, backgroundColor: colors.comments + '22', tension: 0.3, spanGaps: true },
+    { label: '공유 증감율', data: rate('shares'), borderColor: colors.shares, backgroundColor: colors.shares + '22', tension: 0.3, spanGaps: true },
+    { label: '저장 증감율', data: rate('saves'), borderColor: colors.saves, backgroundColor: colors.saves + '22', tension: 0.3, spanGaps: true }
+  ] : [
+    { label: '조회수', data: series('views'), borderColor: colors.views, backgroundColor: colors.views + '22', tension: 0.3 },
+    { label: '좋아요', data: series('likes'), borderColor: colors.likes, backgroundColor: colors.likes + '22', tension: 0.3 },
+    { label: '댓글', data: series('comments'), borderColor: colors.comments, backgroundColor: colors.comments + '22', tension: 0.3 },
+    { label: '공유', data: series('shares'), borderColor: colors.shares, backgroundColor: colors.shares + '22', tension: 0.3 },
+    { label: '저장', data: series('saves'), borderColor: colors.saves, backgroundColor: colors.saves + '22', tension: 0.3 }
+  ];
+
+  _chartInstances.main = new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#cfcfcf', font: { family: 'Pretendard', size: 12 }, boxWidth: 14, padding: 14, usePointStyle: true }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const v = ctx.parsed.y;
+              if (v == null) return ctx.dataset.label + ': —';
+              return ctx.dataset.label + ': ' + (mode === 'rate' ? (v >= 0 ? '+' : '') + v + '%' : v.toLocaleString());
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#aaa', font: { family: 'Bebas Neue', size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: {
+          ticks: {
+            color: '#aaa', font: { family: 'Bebas Neue', size: 11 },
+            callback: (val) => mode === 'rate' ? (val + '%') : (val >= 1000 ? (val/1000).toFixed(1) + 'k' : val)
+          },
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          beginAtZero: mode === 'absolute'
+        }
+      }
+    }
+  });
+}
+
+function renderInsightSummaryCard(host, mission, prevMission) {
+  const fi = mission.finalInsight || {};
+  const pfi = prevMission && prevMission.finalInsight ? prevMission.finalInsight : null;
+
+  const deltaPill = (cur, prev) => {
+    if (prev == null || prev === 0) return '<span class="delta-pill flat">—</span>';
+    const diff = cur - prev;
+    const pct = Math.round((diff / prev) * 1000) / 10;
+    const cls = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
+    const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '—';
+    return `<span class="delta-pill ${cls}">${arrow} ${pct >= 0 ? '+' : ''}${pct}%</span>`;
+  };
+
+  const card = document.createElement('div');
+  card.className = 'insight-summary-card';
+  card.innerHTML = `
+    <div class="isc-head">
+      <div class="isc-title-block">
+        <div class="isc-ttl">${escapeHtml(mission.title)}</div>
+        <div class="isc-meta">${mission.type === 'reels' ? 'REELS' : 'FEED'} · WEEK ${mission.week} · 업로드 ${formatDate(mission.createdAt)}</div>
+      </div>
+      <a href="${ensureUrl(mission.url)}" target="_blank" rel="noopener" class="btn btn-ghost btn-xs">콘텐츠 보기 ↗</a>
+    </div>
+    <div class="isc-stats-grid">
+      <div class="isc-stat">
+        <div class="isc-lbl">조회수</div>
+        <div class="isc-val">${(fi.views||0).toLocaleString()}</div>
+        ${deltaPill(fi.views || 0, pfi ? pfi.views : null)}
+      </div>
+      <div class="isc-stat">
+        <div class="isc-lbl">좋아요</div>
+        <div class="isc-val">${(fi.likes||0).toLocaleString()}</div>
+        ${deltaPill(fi.likes || 0, pfi ? pfi.likes : null)}
+      </div>
+      <div class="isc-stat">
+        <div class="isc-lbl">댓글</div>
+        <div class="isc-val">${(fi.comments||0).toLocaleString()}</div>
+        ${deltaPill(fi.comments || 0, pfi ? pfi.comments : null)}
+      </div>
+      <div class="isc-stat">
+        <div class="isc-lbl">공유</div>
+        <div class="isc-val">${(fi.shares||0).toLocaleString()}</div>
+        ${deltaPill(fi.shares || 0, pfi ? pfi.shares : null)}
+      </div>
+      <div class="isc-stat">
+        <div class="isc-lbl">저장</div>
+        <div class="isc-val">${(fi.saves||0).toLocaleString()}</div>
+        ${deltaPill(fi.saves || 0, pfi ? pfi.saves : null)}
+      </div>
+    </div>
+    <div class="isc-foot">
+      ${fi.recordedAt ? `최근 갱신 ${formatTime(fi.recordedAt)}` : ''}
+      ${prevMission ? ` · 이전 미션 「${escapeHtml(prevMission.title)}」 대비` : ''}
+    </div>
+  `;
+  host.appendChild(card);
 }
 
 function setInsightViewer(pid) {
@@ -3287,123 +4234,193 @@ function setInsightViewer(pid) {
   renderMyInsights(host);
 }
 
-function renderInsightMissionCard(host, mission) {
-  const insights = State.data.insights
-    .filter(i => i.missionId === mission.id);
-  const byDay = {};
-  insights.forEach(i => { byDay[i.day] = i; });
-  const latest = getLatestInsight(mission.id) || { views:0, comments:0, saves:0, shares:0 };
+/* ========================================================
+   FOLLOWER BEFORE & AFTER
+   ======================================================== */
+function renderFollowerBeforeAfter(participant) {
+  const isAdmin = State.user.role === 'admin';
+  const me = getCurrentParticipant();
+  const isMine = me && me.id === participant.id;
+  const canEdit = isAdmin || isMine;
 
-  const card = document.createElement('div');
-  card.className = 'insight-mission-card';
-  card.innerHTML = `
-    <div class="insight-mission-head">
-      <div class="title-block">
-        <div class="ttl">${escapeHtml(mission.title)}</div>
-        <div class="meta">${mission.type === 'reels' ? 'REELS' : 'FEED'} · WEEK ${mission.week} · ${formatDate(mission.createdAt)}</div>
+  const before = participant.followerBefore || null;
+  const after = participant.followerAfter || null;
+
+  let growthHtml = '';
+  if (before && after && before.count != null && after.count != null) {
+    const diff = after.count - before.count;
+    const pct = before.count > 0 ? Math.round((diff / before.count) * 1000) / 10 : null;
+    const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat';
+    const arrow = diff > 0 ? '▲' : diff < 0 ? '▼' : '—';
+    const sign = diff >= 0 ? '+' : '';
+    growthHtml = `
+      <div class="fb-growth ${cls}">
+        <div class="fbg-arrow">${arrow}</div>
+        <div class="fbg-body">
+          <div class="fbg-lbl">팔로워 변화</div>
+          <div class="fbg-num">${sign}${diff.toLocaleString()}명</div>
+          ${pct != null ? `<div class="fbg-pct">${sign}${pct}%</div>` : ''}
+        </div>
       </div>
-      <div class="totals">
-        <div class="t-item"><div class="lbl">VIEWS</div><div class="val">${(latest.views||0).toLocaleString()}</div></div>
-        <div class="t-item"><div class="lbl">CMT</div><div class="val">${(latest.comments||0).toLocaleString()}</div></div>
-        <div class="t-item"><div class="lbl">SAVE</div><div class="val">${(latest.saves||0).toLocaleString()}</div></div>
-        <div class="t-item"><div class="lbl">SHARE</div><div class="val">${(latest.shares||0).toLocaleString()}</div></div>
-      </div>
-    </div>
-    <div class="days-block">
-      ${[1,2,3,4,5,6,7].map(d => {
-        const ent = byDay[d] || { views:'', comments:'', saves:'', shares:'' };
-        return `
-          <div class="day-row">
-            <div class="day-lbl">DAY ${d}</div>
-            <input type="number" min="0" placeholder="조회" value="${ent.views || ''}" id="ins-${mission.id}-${d}-views">
-            <input type="number" min="0" placeholder="댓글" value="${ent.comments || ''}" id="ins-${mission.id}-${d}-comments">
-            <input type="number" min="0" placeholder="저장" value="${ent.saves || ''}" id="ins-${mission.id}-${d}-saves">
-            <input type="number" min="0" placeholder="공유" value="${ent.shares || ''}" id="ins-${mission.id}-${d}-shares">
-            <button class="btn btn-primary btn-sm save-btn" onclick="saveInsight('${mission.id}', ${d})">저장</button>
+    `;
+  }
+
+  const card = (kind, label, eyebrow, data, accentCls) => {
+    const has = data && data.image;
+    return `
+      <div class="fb-card ${accentCls} ${has ? 'has-image' : 'empty'}">
+        <div class="fb-eyebrow">${eyebrow}</div>
+        <div class="fb-label">${label}</div>
+        ${has ? `
+          <div class="fb-shot" onclick="openImageLightbox('${data.image}')">
+            <img src="${data.image}" alt="${label}">
           </div>
-        `;
-      }).join('')}
-    </div>
-    <div class="chart-wrap-tall">
-      <canvas id="chart-${mission.id}"></canvas>
+          <div class="fb-count">
+            <span class="fbc-num">${(data.count || 0).toLocaleString()}</span>
+            <span class="fbc-unit">팔로워</span>
+          </div>
+          <div class="fb-time">${data.recordedAt ? formatDate(data.recordedAt) + ' 기록' : ''}</div>
+        ` : `
+          <div class="fb-empty-shot">
+            <div class="fbe-icon">📷</div>
+            <div class="fbe-msg">아직 등록된 캡쳐가 없습니다</div>
+          </div>
+          <div class="fb-count empty"><span class="fbc-num">—</span><span class="fbc-unit">팔로워</span></div>
+        `}
+        ${canEdit ? `
+          <div class="fb-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openFollowerEditor('${participant.id}', '${kind}')">${has ? '수정' : '등록'}</button>
+            ${has ? `<button class="btn btn-danger btn-sm" onclick="clearFollowerData('${participant.id}', '${kind}')">삭제</button>` : ''}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  };
+
+  return `
+    <div class="fb-section">
+      <div class="fb-section-head">
+        <div>
+          <div class="section-eyebrow">BEFORE / AFTER</div>
+          <h3 class="block-title" style="margin-bottom:4px;">팔로워 변화 인증샷</h3>
+          <p style="font-size:12px; color:var(--ink-mute);">시즌 시작과 종료 시점의 인스타그램 프로필 캡쳐를 등록하면 성장이 한눈에 보입니다.</p>
+        </div>
+      </div>
+      <div class="fb-grid">
+        ${card('before', '시즌 시작', 'BEFORE · 시즌 출발선', before, 'before')}
+        <div class="fb-arrow-cell">${growthHtml || '<div class="fb-arrow-empty">→</div>'}</div>
+        ${card('after', '시즌 종료', 'AFTER · 시즌 결승선', after, 'after')}
+      </div>
     </div>
   `;
-  host.appendChild(card);
-  renderInsightChart(mission.id);
 }
 
-async function saveInsight(missionId, day) {
-  const views = parseInt(document.getElementById(`ins-${missionId}-${day}-views`).value) || 0;
-  const comments = parseInt(document.getElementById(`ins-${missionId}-${day}-comments`).value) || 0;
-  const saves = parseInt(document.getElementById(`ins-${missionId}-${day}-saves`).value) || 0;
-  const shares = parseInt(document.getElementById(`ins-${missionId}-${day}-shares`).value) || 0;
-
-  // Remove existing same-day entry
-  State.data.insights = State.data.insights.filter(i => !(i.missionId === missionId && i.day === day));
-  State.data.insights.push({
-    id: uid('i'),
-    missionId,
-    day,
-    views, comments, saves, shares,
-    recordedAt: Date.now()
-  });
-  await Storage.set('insights', State.data.insights);
-  toast(`DAY ${day} 저장됨`);
-  renderInsightChart(missionId);
-  // Update totals strip
-  const card = document.getElementById(`chart-${missionId}`).closest('.insight-mission-card');
-  const latest = getLatestInsight(missionId) || { views:0, comments:0, saves:0, shares:0 };
-  const totals = card.querySelectorAll('.totals .t-item .val');
-  if (totals.length === 4) {
-    totals[0].textContent = (latest.views||0).toLocaleString();
-    totals[1].textContent = (latest.comments||0).toLocaleString();
-    totals[2].textContent = (latest.saves||0).toLocaleString();
-    totals[3].textContent = (latest.shares||0).toLocaleString();
+function openFollowerEditor(participantId, kind) {
+  const p = getParticipant(participantId);
+  if (!p) return;
+  const me = getCurrentParticipant();
+  const isAdmin = State.user.role === 'admin';
+  if (!isAdmin && (!me || me.id !== participantId)) {
+    toast('본인 데이터만 수정할 수 있습니다.');
+    return;
   }
-}
+  const existing = kind === 'before' ? p.followerBefore : p.followerAfter;
+  const title = kind === 'before' ? '시즌 시작 팔로워 인증' : '시즌 종료 팔로워 인증';
+  const tagLine = kind === 'before' ? '시즌 출발선의 인스타그램 프로필 캡쳐를 첨부해주세요.' : '시즌 결승선의 인스타그램 프로필 캡쳐를 첨부해주세요.';
 
-function renderInsightChart(missionId) {
-  const canvas = document.getElementById(`chart-${missionId}`);
-  if (!canvas) return;
-  if (_chartInstances[missionId]) { try { _chartInstances[missionId].destroy(); } catch(e){} }
-
-  const data = State.data.insights
-    .filter(i => i.missionId === missionId)
-    .sort((a, b) => a.day - b.day);
-
-  const labels = [1,2,3,4,5,6,7].map(d => `D${d}`);
-  const getSeries = (key) => [1,2,3,4,5,6,7].map(d => {
-    const ent = data.find(i => i.day === d);
-    return ent ? ent[key] : null;
+  openModal({
+    title,
+    body: `
+      <p style="font-size:12px; color:var(--ink-mute); margin-bottom:14px;">${tagLine}</p>
+      <div class="field">
+        <label>팔로워 수</label>
+        <input type="number" min="0" id="fe-count" value="${existing && existing.count != null ? existing.count : ''}" placeholder="예: 1234">
+      </div>
+      <div class="field">
+        <label>프로필 캡쳐 (PNG/JPG, 5MB 이하)</label>
+        <input type="file" id="fe-file" accept="image/*">
+        <div id="fe-preview" style="margin-top:10px;">
+          ${existing && existing.image ? `<img src="${existing.image}" style="max-width:100%; max-height:280px; border:1px solid var(--line);">` : '<div style="color:var(--ink-mute); font-size:11px; font-family:var(--font-mono-display); letter-spacing:0.15em;">NO IMAGE YET</div>'}
+        </div>
+      </div>
+    `,
+    actions: [
+      { label: '취소', class: 'btn-ghost', onclick: closeModal },
+      { label: '저장', class: 'btn-primary', onclick: () => saveFollowerData(participantId, kind) }
+    ]
   });
 
-  _chartInstances[missionId] = new Chart(canvas, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: '조회수', data: getSeries('views'), borderColor: '#ff2a2a', backgroundColor: 'rgba(255,42,42,0.1)', tension: 0.25, spanGaps: true },
-        { label: '댓글수', data: getSeries('comments'), borderColor: '#ffd23f', backgroundColor: 'rgba(255,210,63,0.1)', tension: 0.25, spanGaps: true },
-        { label: '저장수', data: getSeries('saves'), borderColor: '#6bff8a', backgroundColor: 'rgba(107,255,138,0.1)', tension: 0.25, spanGaps: true },
-        { label: '공유수', data: getSeries('shares'), borderColor: '#7ab8ff', backgroundColor: 'rgba(122,184,255,0.1)', tension: 0.25, spanGaps: true }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#cfcfcf', font: { family: 'Pretendard', size: 11 }, boxWidth: 12, padding: 12 }
-        }
-      },
-      scales: {
-        x: { ticks: { color: '#888', font: { family: 'Bebas Neue', size: 12 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
-        y: { ticks: { color: '#888', font: { family: 'Bebas Neue', size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
-      }
-    }
-  });
+  setTimeout(() => {
+    const fileInput = document.getElementById('fe-file');
+    if (!fileInput) return;
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { toast('파일이 너무 큽니다 (5MB 초과).'); fileInput.value = ''; return; }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const preview = document.getElementById('fe-preview');
+        if (preview) preview.innerHTML = `<img src="${ev.target.result}" style="max-width:100%; max-height:280px; border:1px solid var(--line);">`;
+        // store on input for retrieval
+        fileInput.dataset.dataurl = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }, 50);
 }
+
+async function saveFollowerData(participantId, kind) {
+  const p = getParticipant(participantId);
+  if (!p) return;
+  const countVal = parseInt(document.getElementById('fe-count').value, 10);
+  const count = isNaN(countVal) ? null : Math.max(0, countVal);
+  if (count == null) { toast('팔로워 수를 입력하세요.'); return; }
+
+  const fileInput = document.getElementById('fe-file');
+  const existing = kind === 'before' ? p.followerBefore : p.followerAfter;
+
+  // Image: use new upload if present, otherwise keep existing image
+  let image = existing && existing.image ? existing.image : null;
+  if (fileInput && fileInput.dataset.dataurl) {
+    image = fileInput.dataset.dataurl;
+  }
+  if (!image) {
+    toast('프로필 캡쳐 이미지를 첨부해주세요.');
+    return;
+  }
+
+  const data = { image, count, recordedAt: Date.now() };
+  if (kind === 'before') p.followerBefore = data;
+  else p.followerAfter = data;
+
+  await Storage.set('participants', State.data.participants);
+  closeModal();
+  toast(`${kind === 'before' ? '시작' : '종료'} 시점 팔로워 등록됨`);
+  // Re-render insights so new section reflects
+  const host = document.getElementById('main-view');
+  host.innerHTML = '';
+  renderMyInsights(host);
+}
+
+async function clearFollowerData(participantId, kind) {
+  const p = getParticipant(participantId);
+  if (!p) return;
+  const me = getCurrentParticipant();
+  const isAdmin = State.user.role === 'admin';
+  if (!isAdmin && (!me || me.id !== participantId)) return;
+  if (!confirm(`${kind === 'before' ? '시작' : '종료'} 시점 데이터를 삭제할까요?`)) return;
+  if (kind === 'before') delete p.followerBefore;
+  else delete p.followerAfter;
+  await Storage.set('participants', State.data.participants);
+  toast('삭제됨');
+  const host = document.getElementById('main-view');
+  host.innerHTML = '';
+  renderMyInsights(host);
+}
+
+window.openFollowerEditor = openFollowerEditor;
+window.saveFollowerData = saveFollowerData;
+window.clearFollowerData = clearFollowerData;
 
 /* ========================================================
    ADMIN PAGE
@@ -3894,17 +4911,18 @@ function openSeasonReport(participantId) {
   const weeks = getSeasonWeeks();
   const target = cfg.weeklyTarget || 2;
 
-  // Aggregate totals from latest insights
-  let totalViews = 0, totalComments = 0, totalSaves = 0, totalShares = 0, totalLikes = 0;
+  // Aggregate totals from finalInsight (6-day data entered by participant)
+  let totalViews = 0, totalLikes = 0, totalComments = 0, totalSaves = 0, totalShares = 0;
   myMissions.forEach(m => {
-    const li = getLatestInsight(m.id) || {};
+    const li = m.finalInsight || {};
     totalViews += li.views || 0;
+    totalLikes += li.likes || 0;
     totalComments += li.comments || 0;
     totalSaves += li.saves || 0;
     totalShares += li.shares || 0;
-    totalLikes += State.data.likes.filter(l => l.missionId === m.id).length;
   });
-  const grandTotal = totalViews + totalComments + totalSaves + totalShares;
+  const grandTotal = totalViews + totalLikes + totalComments + totalSaves + totalShares;
+  const reportedCount = myMissions.filter(m => m.finalInsight).length;
 
   // Weekly mission counts
   const weeklyCounts = weeks.map(w => myMissions.filter(m => m.week === w.weekNum).length);
@@ -3936,13 +4954,14 @@ function openSeasonReport(participantId) {
 
       <div class="report-stats">
         <div class="report-stat"><div class="rs-num">${myMissions.length}</div><div class="rs-lbl">총 미션 인증</div></div>
+        <div class="report-stat"><div class="rs-num">${reportedCount}</div><div class="rs-lbl">인사이트 보고</div></div>
         <div class="report-stat"><div class="rs-num">${achievedWeeks} / ${weeks.length}</div><div class="rs-lbl">목표 달성 주차</div></div>
-        <div class="report-stat"><div class="rs-num">${totalViews.toLocaleString()}</div><div class="rs-lbl">누적 조회수</div></div>
-        <div class="report-stat"><div class="rs-num">${totalComments.toLocaleString()}</div><div class="rs-lbl">누적 댓글</div></div>
-        <div class="report-stat"><div class="rs-num">${totalSaves.toLocaleString()}</div><div class="rs-lbl">누적 저장</div></div>
-        <div class="report-stat"><div class="rs-num">${totalShares.toLocaleString()}</div><div class="rs-lbl">누적 공유</div></div>
-        <div class="report-stat"><div class="rs-num">${totalLikes.toLocaleString()}</div><div class="rs-lbl">받은 좋아요</div></div>
         <div class="report-stat highlight"><div class="rs-num">${grandTotal.toLocaleString()}</div><div class="rs-lbl">총 인사이트</div></div>
+        <div class="report-stat"><div class="rs-num">${totalViews.toLocaleString()}</div><div class="rs-lbl">누적 조회수</div></div>
+        <div class="report-stat"><div class="rs-num">${totalLikes.toLocaleString()}</div><div class="rs-lbl">누적 좋아요</div></div>
+        <div class="report-stat"><div class="rs-num">${totalComments.toLocaleString()}</div><div class="rs-lbl">누적 댓글</div></div>
+        <div class="report-stat"><div class="rs-num">${totalShares.toLocaleString()}</div><div class="rs-lbl">누적 공유</div></div>
+        <div class="report-stat"><div class="rs-num">${totalSaves.toLocaleString()}</div><div class="rs-lbl">누적 저장</div></div>
       </div>
 
       <div class="report-section">
@@ -3976,20 +4995,19 @@ function openSeasonReport(participantId) {
       <div class="report-section">
         <h3 class="report-h3">전체 콘텐츠 목록</h3>
         <table class="report-table">
-          <thead><tr><th>주차</th><th>유형</th><th>제목</th><th>조회</th><th>댓글</th><th>저장</th><th>공유</th><th>❤️</th></tr></thead>
+          <thead><tr><th>주차</th><th>유형</th><th>제목</th><th>조회</th><th>좋아요</th><th>댓글</th><th>공유</th><th>저장</th></tr></thead>
           <tbody>
             ${[...myMissions].sort((a,b) => a.week - b.week || a.createdAt - b.createdAt).map(m => {
-              const li = getLatestInsight(m.id) || {};
-              const l = State.data.likes.filter(x => x.missionId === m.id).length;
+              const li = m.finalInsight || {};
               return `<tr>
                 <td>W${m.week}</td>
                 <td>${m.type === 'reels' ? 'REELS' : 'FEED'}</td>
                 <td style="text-align:left;">${escapeHtml(m.title)}</td>
                 <td>${(li.views || 0).toLocaleString()}</td>
+                <td>${(li.likes || 0).toLocaleString()}</td>
                 <td>${(li.comments || 0).toLocaleString()}</td>
-                <td>${(li.saves || 0).toLocaleString()}</td>
                 <td>${(li.shares || 0).toLocaleString()}</td>
-                <td>${l}</td>
+                <td>${(li.saves || 0).toLocaleString()}</td>
               </tr>`;
             }).join('') || '<tr><td colspan="8" style="text-align:center; padding:20px; color:#999;">인증된 미션이 없습니다.</td></tr>'}
           </tbody>
@@ -4203,7 +5221,9 @@ window.closeModal = closeModal;
 window.openImageLightbox = openImageLightbox;
 window.setFameMetric = setFameMetric;
 window.setInsightViewer = setInsightViewer;
-window.saveInsight = saveInsight;
+window.saveMissionInsight = saveMissionInsight;
+window.clearMissionInsight = clearMissionInsight;
+window.setGrowthMode = setGrowthMode;
 window.setAdminTab = setAdminTab;
 window.openParticipantEditor = openParticipantEditor;
 window.saveParticipant = saveParticipant;
