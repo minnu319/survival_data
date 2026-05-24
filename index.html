@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쌩존 (Ssaengjon) - FUCK IT, SHOOT IT!</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-main: #0a0a0a;
+            --bg-card: #141414;
+            --bg-input: #1f1f1f;
+            --accent: #00ff66;
+            --accent-red: #ff3333;
+            --text-main: #ffffff;
+            --text-sub: #888888;
+            --border: #262626;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main);
+            background-image: linear-gradient(rgba(18, 18, 18, 0.98), rgba(10, 10, 10, 0.99)), radial-gradient(circle at 50% 50%, #1a1a1a 10%, #0a0a0a 100%);
+            color: var(--text-main);
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .wrapper { display: flex; min-height: 100vh; flex-direction: row; }
+
+        /* Sidebar Nav */
+        .sidebar {
+            width: 260px; background-color: var(--bg-card); border-right: 1px solid var(--border);
+            padding: 30px 20px; display: flex; flex-direction: column; gap: 30px;
+            flex-shrink: 0;
+        }
+        .logo-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .logo-area h1 { font-size: 2rem; font-weight: 900; margin: 0; letter-spacing: -2px; }
+        .logo-area h1 span { color: var(--accent); }
+        .logo-area p { font-size: 0.8rem; color: var(--text-sub); font-weight: 800; margin-top: 5px; }
+
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; }
+        .nav-btn {
+            background: none; border: none; color: var(--text-sub); text-align: left;
+            padding: 14px 16px; font-size: 1rem; font-weight: 700; cursor: pointer; border-radius: 8px; transition: 0.2s;
+        }
+        .nav-btn:hover, .nav-btn.active { background-color: var(--bg-input); color: var(--accent); padding-left: 22px; }
+
+        /* Main Content */
+        .main-panel { flex: 1; padding: 40px; max-width: 1200px; width: 100%; box-sizing: border-box; }
+        .content-section { display: none; animation: fadeIn 0.3s ease; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-title {
+            font-size: 1.8rem; font-weight: 800; margin-bottom: 30px; border-left: 5px solid var(--accent);
+            padding-left: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+        }
+
+        .card { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+        input, textarea, select {
+            background-color: var(--bg-input); border: 1px solid var(--border); color: var(--text-main);
+            padding: 12px; border-radius: 6px; font-size: 0.95rem; width: 100%; box-sizing: border-box; outline: none; transition: 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+        .btn-prime {
+            background-color: var(--accent); color: #000; border: none; padding: 10px 20px; font-weight: 800;
+            border-radius: 6px; cursor: pointer; transition: 0.2s; white-space: nowrap;
+        }
+        .btn-prime:hover { opacity: 0.8; }
+        .btn-call-leader { background-color: var(--accent-red); color: white; }
+
+        /* Groups & Missions */
+        .group-header { background: var(--bg-input); padding: 12px 20px; border-radius: 8px; font-weight: 800; color: var(--accent); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;}
+        .member-row { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border); gap: 20px; transition: 0.3s; flex-wrap: wrap;}
+        .member-row:last-child { border-bottom: none; }
+        
+        /* 탈락 위기 경보 (Crisis Animation) */
+        .crisis-alert {
+            border-left: 4px solid var(--accent-red);
+            background: rgba(255, 51, 51, 0.05);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 51, 51, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
+        }
+
+        .member-meta { width: 220px; flex-shrink: 0; }
+        .member-name { font-size: 1.05rem; font-weight: 700; }
+        .member-tag { font-size: 0.8rem; color: var(--text-sub); margin-top: 4px; display: inline-block; background: var(--bg-input); padding: 2px 8px; border-radius: 12px; }
+        
+        .mission-status { display: flex; gap: 15px; flex: 1; min-width: 300px; flex-wrap: wrap; }
+        .mission-box { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 6px; flex: 1; min-width: 140px; border: 1px solid transparent; transition: 0.2s;}
+        .mission-box:hover { border-color: var(--border); }
+        .mission-label { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-weight: 600;}
+        .mission-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+        
+        .url-input-group { display: flex; gap: 8px; }
+        .url-input-group input { padding: 8px; font-size: 0.8rem; flex: 1; }
+        .url-link-btn { background: var(--border); color: white; border: none; padding: 0 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 600; transition: 0.2s;}
+        .url-link-btn:hover { background: var(--text-sub); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+        th { background-color: var(--bg-input); color: var(--text-sub); font-weight: 600; }
+        .admin-select { padding: 8px; font-size: 0.85rem; width: auto; background: var(--bg-main); cursor: pointer;}
+
+        /* Mobile Responsiveness */
+        @media (max-width: 900px) {
+            .wrapper { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 20px; box-sizing: border-box; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .main-panel { padding: 20px; }
+            .member-row { flex-direction: column; align-items: flex-start; }
+            .member-meta { width: 100%; margin-bottom: 10px; }
+            .mission-status { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <nav class="sidebar">
+        <div class="logo-area">
+            <img src="KakaoTalk_20260424_000529199.jpg" alt="쌩존 Logo" style="max-width:120px; border-radius:8px; margin-bottom:10px;" onerror="this.style.display='none';">
+            <h1>쌩<span>존</span></h1>
+            <p>FUCK IT, SHOOT IT!</p>
+        </div>
+        <div class="nav-menu">
+            <button class="nav-btn active" onclick="switchTab('plaza')">🏛️ 대구역 (공지/광장)</button>
+            <button class="nav-btn" onclick="switchTab('district')">👥 소구역 (조별 일지)</button>
+            <button class="nav-btn" onclick="switchTab('insights')">📈 인사이트 분석실</button>
+            <button class="nav-btn" onclick="switchTab('admin')">🔒 리더 전용 관리</button>
+        </div>
+    </nav>
+
+    <main class="main-panel">
+        <section id="plaza" class="content-section active">
+            <div class="section-title">
+                🏛️ 대구역 크리에이터 광장
+                <button class="btn-prime btn-call-leader" onclick="callLeader()">🚨 구역장 긴급 호출</button>
+            </div>
+            <div class="card" style="border-left: 4px solid var(--accent);">
+                <h3 style="margin-top:0;">📢 리더 민누의 고정 공지</h3>
+                <p style="line-height: 1.6;">핑계 대지 말고 일단 찍어서 올리세요. 알고리즘은 완벽함을 기다려주지 않습니다.<br>기획이 막히거나 피드백이 필요하면 언제든 우측 상단의 <strong>[구역장 긴급 호출]</strong>을 눌러주세요.</p>
+            </div>
+            <div class="card">
+                <h3>💡 구역장 실시간 트렌드 인사이트</h3>
+                <div id="insight-feed-container"><p style="color:var(--text-sub);">최신 후킹 레퍼런스와 플랫폼 로직 변화가 이곳에 실시간 업데이트 됩니다.</p></div>
+            </div>
+        </section>
+
+        <section id="district" class="content-section">
+            <div class="section-title">
+                <span>👥 소구역 조별 미션 일지</span>
+                <button class="btn-prime btn-call-leader" style="font-size: 0.85rem;" onclick="callLeader()">🚨 도움 요청 (구역장 호출)</button>
+            </div>
+            
+            <div id="dynamic-groups-container"></div>
+
+            <div class="card" style="margin-top: 40px;">
+                <h3>💬 상호 피드백 & 소통 스레드</h3>
+                <div style="margin-bottom:15px; display:flex; flex-direction:column; gap:10px;">
+                    <input type="text" id="comment-user" placeholder="본인 활동명 입력" style="max-width:200px;">
+                    <textarea id="comment-text" rows="3" placeholder="동료의 3초 후킹 포인트, 시청 지속시간 개선점 등 피드백을 남겨주세요."></textarea>
+                    <div style="text-align: right;">
+                        <button class="btn-prime" onclick="postComment()">의견 게시</button>
+                    </div>
+                </div>
+                <div id="comment-stream"></div>
+            </div>
+        </section>
+
+        <section id="insights" class="content-section">
+            <div class="section-title">📈 7일간의 성과 대시보드</div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📊 성과 지표 직접 입력</h3>
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        <input type="text" placeholder="활동명 입력">
+                        <select id="ins-day"><option value="0">1일차</option><option value="1">2일차</option><option value="2">3일차</option><option value="3">4일차</option><option value="4">5일차</option><option value="5">6일차</option><option value="6">7일차</option></select>
+                        <input type="number" id="ins-views" placeholder="조회수 입력">
+                        <button class="btn-prime" onclick="updateChart()">데이터 갱신</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>📈 통합 증감율 그래프</h3>
+                    <canvas id="analyticsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin" class="content-section">
+            <div class="section-title">🔒 리더 전용 통합 관리자실</div>
+            <div class="card">
+                <h3>👥 조 편성 및 멤버 관리 (총 21명)</h3>
+                <p style="color:var(--accent-red); font-size:0.9rem; margin-top:0; font-weight:600;">* 변경 사항은 [소구역] 탭에 즉시 반영됩니다. (조당 최대 5명 제한)</p>
+                <div style="overflow-x:auto; max-height: 600px; overflow-y: auto;">
+                    <table>
+                        <thead><tr><th>이름 / 활동명</th><th>카테고리</th><th>소속 조 변경</th></tr></thead>
+                        <tbody id="admin-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    // System Core Data & State Management
+    // Added 'missions' and 'urls' to preserve user inputs when Admin moves a member
+    const getBaseMember = (id, name, tag) => ({
+        id, name, tag,
+        missions: { r1: false, r2: false, f1: false },
+        urls: { r1: '', r2: '', f1: '' }
+    });
+
+    const teams = [
+        {
+            name: "🔥 1조 [뷰티/뷰티케어]",
+            members: [
+                getBaseMember("m1", "장혜영 / 우발조", "패션/뷰티"),
+                getBaseMember("m2", "남수현 / 얼굴구조설계전문가", "뷰티/건강"),
+                getBaseMember("m3", "윤도경 / 도파밍", "뷰티/꿀템"),
+                getBaseMember("m4", "오한교 / 놀면모한교", "뷰티/자기관리"),
+                getBaseMember("m5", "김근택 / 이안", "뷰티, 피부과")
+            ]
+        },
+        {
+            name: "🔥 2조 [패션/여행]",
+            members: [
+                getBaseMember("m6", "김미미 / run_miimii", "러닝 / 패션"),
+                getBaseMember("m7", "주묘경 / 베리묘", "패션/여행"),
+                getBaseMember("m8", "이슬 / 스리슬쩍", "패션 / 여행"),
+                getBaseMember("m9", "김수연 / 연더로드", "패션/여행")
+            ]
+        },
+        {
+            name: "🔥 3조 [육아/일상]",
+            members: [
+                getBaseMember("m10", "유유리 / 신넬로피", "육아"),
+                getBaseMember("m11", "장형석 / 형석", "육아/일상"),
+                getBaseMember("m12", "서혜림 / 헤일리월드", "육아/ 일상"),
+                getBaseMember("m13", "박채완 / 완마미아", "워킹맘/동기부여"),
+                getBaseMember("m17", "노금미 / 미미언니", "육아소통/푸드")
+            ]
+        },
+        {
+            name: "🔥 4조 [푸드/라이프스타일]",
+            members: [
+                getBaseMember("m14", "이수연 / 쑤케치북", "라이프스타일 / 커리어"),
+                getBaseMember("m15", "강선영 / 와글핑", "ASMR / 공감"),
+                getBaseMember("m16", "허진영 / 하리", "패션/라이프스타일")
+            ]
+        },
+        {
+            name: "🔥 5조 [푸드/커플/결혼]",
+            members: [
+                getBaseMember("m18", "최라진 / 디사녀", "푸드(디저트)"),
+                getBaseMember("m19", "박혜진 / 살만혜진", "음식/요리"),
+                getBaseMember("m20", "이소유 / 소학행커플", "커플/부부유튜브"),
+                getBaseMember("m21", "전승욱", "결혼/ 사회")
+            ]
+        }
+    ];
+
+    window.onload = () => {
+        renderDistrictGroups();
+        renderAdminTable();
+        initChart();
+    };
+
+    // Tab Switching with Password Protection logic
+    function switchTab(id) {
+        if(id === 'admin') {
+            const pwd = prompt("관리자(리더) 전용 메뉴입니다. 비밀번호를 입력하세요.");
+            if(pwd !== "137202") {
+                alert("🚨 비밀번호가 일치하지 않습니다. 접근이 차단되었습니다.");
+                return; 
+            }
+        }
+
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function callLeader() {
+        alert("🚨 리더 민누에게 긴급 호출 알림이 전송되었습니다. 핑계대지 말고 일단 진행하세요!");
+    }
+
+    // Helper: Find member state
+    function getMemberState(mId) {
+        for(let t of teams) {
+            let m = t.members.find(x => x.id === mId);
+            if(m) return m;
+        }
+        return null;
+    }
+
+    // State updaters
+    window.updateMissionState = function(mId, missionType, isChecked) {
+        let m = getMemberState(mId);
+        if(m) {
+            m.missions[missionType] = isChecked;
+            checkCrisisVisual(mId, m);
+        }
+    }
+    window.updateUrlState = function(mId, missionType, val) {
+        let m = getMemberState(mId);
+        if(m) {
+            m.urls[missionType] = val;
+            updateLinkBtnVisual(mId, missionType, val);
+        }
+    }
+
+    // Dynamic Group Rendering
+    function renderDistrictGroups() {
+        const container = document.getElementById('dynamic-groups-container');
+        container.innerHTML = "";
+
+        teams.forEach((team) => {
+            let html = `<div class="group-header"><span>${team.name}</span> <span style="background:rgba(255,255,255,0.1); padding:4px 10px; border-radius:20px;">${team.members.length}명 / 최대 5명</span></div><div class="card" style="padding:10px 24px;">`;
+            
+            if(team.members.length === 0) {
+                html += `<div style="color:var(--text-sub); text-align:center; padding: 20px;">배정된 인원이 없습니다.</div>`;
+            }
+
+            team.members.forEach(m => {
+                const isCrisis = !(m.missions.r1 || m.missions.r2 || m.missions.f1);
+                const crisisClass = isCrisis ? 'crisis-alert' : '';
+
+                html += `
+                <div class="member-row ${crisisClass}" id="row-${m.id}">
+                    <div class="member-meta">
+                        <div class="member-name">${m.name}</div>
+                        <div class="member-tag">${m.tag}</div>
+                    </div>
+                    <div class="mission-status">
+                        ${['r1', 'r2'].map((key, idx) => `
+                        <div class="mission-box">
+                            <div class="mission-label">릴스 ${idx+1} <input type="checkbox" ${m.missions[key] ? 'checked' : ''} onchange="updateMissionState('${m.id}', '${key}', this.checked)"></div>
+                            <div class="url-input-group">
+                                <input type="text" id="url-${m.id}-${key}" value="${m.urls[key]}" placeholder="URL 입력" oninput="updateUrlState('${m.id}', '${key}', this.value)">
+                                <a id="btn-${m.id}-${key}" href="${m.urls[key].length>5 ? (m.urls[key].startsWith('http')?m.urls[key]:'https://'+m.urls[key]) : '#'}" target="_blank" class="url-link-btn" style="pointer-events:${m.urls[key].length>5?'auto':'none'}; opacity:${m.urls[key].length>5?'1':'0.3'};">이동</a>
+                            </div>
+                        </div>`).join('')}
+                        <div class="mission-box">
+                            <div class="mission-label">피드 1 <input type="checkbox" ${m.missions.f1 ? 'checked' : ''} onchange="updateMissionState('${m.id}', 'f1', this.checked)"></div>
+                            <div class="url-input-group">
+                                <input type="text" id="url-${m.id}-f1" value="${m.urls.f1}" placeholder="URL 입력" oninput="updateUrlState('${m.id}', 'f1', this.value)">
+                                <a id="btn-${m.id}-f1" href="${m.urls.f1.length>5 ? (m.urls.f1.startsWith('http')?m.urls.f1:'https://'+m.urls.f1) : '#'}" target="_blank" class="url-link-btn" style="pointer-events:${m.urls.f1.length>5?'auto':'none'}; opacity:${m.urls.f1.length>5?'1':'0.3'};">이동</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+            container.innerHTML += html;
+        });
+    }
+
+    // Admin Move Logic (Maintains State)
+    function renderAdminTable() {
+        const tbody = document.getElementById('admin-table-body');
+        tbody.innerHTML = "";
+        
+        teams.forEach((t, currentTeamIndex) => {
+            t.members.forEach(m => {
+                let optionsHtml = teams.map((teamData, index) => {
+                    const isSelected = index === currentTeamIndex ? "selected" : "";
+                    return `<option value="${index}" ${isSelected}>${teamData.name.split(']')[0]}]</option>`;
+                }).join('');
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${m.name}</strong></td>
+                        <td><span style="background:var(--bg-main); padding:4px 8px; border-radius:4px; font-size:0.8rem;">${m.tag}</span></td>
+                        <td>
+                            <select class="admin-select" onchange="moveMember('${m.id}', parseInt(this.value), ${currentTeamIndex}, this)">
+                                ${optionsHtml}
+                            </select>
+                        </td>
+                    </tr>`;
+            });
+        });
+    }
+
+    window.moveMember = function(memberId, newTeamIndex, oldTeamIndex, selectElement) {
+        if(newTeamIndex === oldTeamIndex) return;
+
+        if(teams[newTeamIndex].members.length >= 5) {
+            alert("⚠️ 해당 조는 이미 최대 인원(5명)이 꽉 찼습니다. 이동이 취소됩니다.");
+            selectElement.value = oldTeamIndex; // 롤백
+            return;
+        }
+
+        const memberIndex = teams[oldTeamIndex].members.findIndex(x => x.id === memberId);
+        if(memberIndex !== -1) {
+            const targetMember = teams[oldTeamIndex].members.splice(memberIndex, 1)[0];
+            teams[newTeamIndex].members.push(targetMember);
+            alert(`✅ ${targetMember.name.split('/')[0].trim()}님이 성공적으로 이동되었습니다.`);
+        }
+
+        renderAdminTable();
+        renderDistrictGroups(); // 상태(State)가 보존되므로 체크박스와 URL이 증발하지 않음
+    }
+
+    // Visual Updaters
+    function checkCrisisVisual(mId, memberObj) {
+        const row = document.getElementById(`row-${mId}`);
+        if(!row) return;
+        const isSafe = memberObj.missions.r1 || memberObj.missions.r2 || memberObj.missions.f1;
+        if (isSafe) row.classList.remove('crisis-alert');
+        else row.classList.add('crisis-alert');
+    }
+
+    function updateLinkBtnVisual(mId, missionType, val) {
+        const btn = document.getElementById(`btn-${mId}-${missionType}`);
+        if(!btn) return;
+        if(val.length > 5) {
+            let finalUrl = val.startsWith('http') ? val : 'https://' + val;
+            btn.href = finalUrl;
+            btn.style.pointerEvents = 'auto';
+            btn.style.opacity = '1';
+        } else {
+            btn.removeAttribute('href');
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.3';
+        }
+    }
+
+    window.postComment = function() {
+        const user = document.getElementById('comment-user').value || "익명 크리에이터";
+        const text = document.getElementById('comment-text').value;
+        if(!text) return;
+        const stream = document.getElementById('comment-stream');
+        const node = document.createElement('div');
+        node.style.cssText = "padding:16px; border-left:3px solid var(--accent); background:var(--bg-input); margin-bottom:12px; border-radius:6px; animation: fadeIn 0.3s ease;";
+        node.innerHTML = `<div><strong style="color:var(--text-main); font-size:1.05rem;">${user}</strong> <span style="font-size:0.8rem; color:var(--text-sub); margin-left:8px;">방금 전</span></div><p style="margin:8px 0 0 0; line-height:1.5; color:#ddd;">${text}</p>`;
+        stream.insertBefore(node, stream.firstChild);
+        document.getElementById('comment-text').value = "";
+    }
+
+    // Chart.js implementation
+    let chartInst;
+    function initChart() {
+        const ctx = document.getElementById('analyticsChart').getContext('2d');
+        Chart.defaults.color = '#888888';
+        chartInst = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1일차','2일차','3일차','4일차','5일차','6일차','7일차'],
+                datasets: [{ label: '조회수 트렌드', data: [100, 500, 1200, 3000, 8000, 15000, 25000], borderColor: '#00ff66', backgroundColor: 'rgba(0, 255, 102, 0.1)', fill: true, tension: 0.4, borderWidth: 3 }]
+            },
+            options: { responsive: true, scales: { y:{grid:{color:'#262626'}}, x:{grid:{color:'#262626'}} }, plugins: { legend: { display: false } } }
+        });
+    }
+    window.updateChart = function() {
+        const val = parseInt(document.getElementById('ins-views').value);
+        const day = parseInt(document.getElementById('ins-day').value);
+        if(val) {
+            chartInst.data.datasets[0].data[day] = val;
+            chartInst.update();
+        }
+    }
+</script>
+</body>
+</html>
